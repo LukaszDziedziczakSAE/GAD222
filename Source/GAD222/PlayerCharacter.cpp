@@ -4,6 +4,7 @@
 #include "PlayerCharacter.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -39,3 +40,22 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 }
 
+void APlayerCharacter::StartAiming()
+{
+	bIsAiming = true;
+	SpringArm->SetRelativeLocation(FVector(0, 30, 70));
+	SpringArm->TargetArmLength = 75.0f;
+	bUseControllerRotationYaw = true;
+	GetCharacterMovement()->bOrientRotationToMovement = false;
+	OnAimStart.Broadcast();
+}
+
+void APlayerCharacter::StopAiming()
+{
+	SpringArm->SetRelativeLocation(FVector(0, 0, 80));
+	SpringArm->TargetArmLength = 250.0f;
+	bUseControllerRotationYaw = false;
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	bIsAiming = false;
+	OnAimStop.Broadcast();
+}

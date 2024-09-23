@@ -4,7 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "EWeaponType.h"
 #include "PlayerCharacter.generated.h"
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAimStartDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAimStopDelegate);
 
 UCLASS()
 class GAD222_API APlayerCharacter : public ACharacter
@@ -25,6 +29,12 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UCameraComponent* Camera;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool bIsAiming;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TEnumAsByte<EWeaponType> CurrentWeaponType;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -32,4 +42,15 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UFUNCTION(BlueprintCallable)
+	void StartAiming();
+
+	UFUNCTION(BlueprintCallable)
+	void StopAiming();
+
+	UPROPERTY(BlueprintAssignable)
+	FOnAimStartDelegate OnAimStart;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnAimStopDelegate OnAimStop;
 };
