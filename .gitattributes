@@ -1,3 +1,6 @@
 Content/YI_NPC/Textures/Maria/Outfit/T_Maria_Accessories_N.uasset filter=lfs diff=lfs merge=lfs -text
 Content/YI_NPC/Textures/Maria/Outfit/T_Maria_Pants_N.uasset filter=lfs diff=lfs merge=lfs -text
 Content/YI_NPC/Textures/Maria/Outfit/T_Maria_Shirt_N.uasset filter=lfs diff=lfs merge=lfs -text
+Content/YI_NPC/Textures/Mike/Outfit/T_Mike_Accessories_N.uasset filter=lfs diff=lfs merge=lfs -text
+Content/YI_NPC/Textures/Mike/Outfit/T_Mike_Pants_N.uasset filter=lfs diff=lfs merge=lfs -text
+Content/YI_NPC/Textures/Mike/Outfit/T_Mike_Shirt_N.uasset filter=lfs diff=lfs merge=lfs -text
