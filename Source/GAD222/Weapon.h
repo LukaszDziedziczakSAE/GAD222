@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "EWeaponType.h"
 #include "Weapon.generated.h"
 
 UCLASS()
@@ -19,8 +20,28 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	class USkeletalMeshComponent* WeaponMesh;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TEnumAsByte<EWeaponType> WeaponType;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	class USoundCue* FireSoundCue;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	USceneComponent* Muzzle;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	class UNiagaraSystem* FireEffectMuzzle;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UFUNCTION()
+	TEnumAsByte<EWeaponType> GetWeaponType() { return WeaponType; }
+
+	UFUNCTION()
+	void Fire();
 };

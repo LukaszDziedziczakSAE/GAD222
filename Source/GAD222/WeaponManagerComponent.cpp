@@ -2,6 +2,8 @@
 
 
 #include "WeaponManagerComponent.h"
+#include "Weapon.h"
+#include "PlayerCharacter.h"
 
 // Sets default values for this component's properties
 UWeaponManagerComponent::UWeaponManagerComponent()
@@ -19,7 +21,7 @@ void UWeaponManagerComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
+	PlayerCharacter = Cast<APlayerCharacter>(GetOwner());
 	
 }
 
@@ -30,5 +32,50 @@ void UWeaponManagerComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+}
+
+void UWeaponManagerComponent::EquipWeapon()
+{
+	if (CurrentWeapon == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Spawning Weapon"));
+		SpawnWeapon();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Despawning Weapon"));
+		DespawnWeapon();
+	}
+}
+
+void UWeaponManagerComponent::UnequipWeapon()
+{
+
+}
+
+void UWeaponManagerComponent::SpawnWeapon()
+{
+	CurrentWeapon = GetWorld()->SpawnActor<AWeapon>(Weapons[0].Weapon);
+	CurrentWeapon->AttachToComponent(PlayerCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, TEXT("Hand_Right"));
+	CurrentWeapon->SetActorRelativeLocation(Weapons[0].RelativeLocation);
+	CurrentWeapon->SetActorRelativeRotation(Weapons[0].RelativeRotation);
+}
+
+void UWeaponManagerComponent::DespawnWeapon()
+{
+	CurrentWeapon->Destroy();
+	CurrentWeapon = nullptr;
+}
+
+void UWeaponManagerComponent::PullTrigger()
+{
+	if (CurrentWeapon == nullptr) return;
+
+	CurrentWeapon->Fire();
+}
+
+void UWeaponManagerComponent::ReleaseTrigger()
+{
+
 }
 

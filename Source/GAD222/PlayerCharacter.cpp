@@ -45,6 +45,8 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 void APlayerCharacter::StartAiming()
 {
+	if (WeaponManagerComponent->CurrentWeapon == nullptr) return;
+
 	bIsAiming = true;
 	SpringArm->SetRelativeLocation(FVector(0, 30, 70));
 	SpringArm->TargetArmLength = 75.0f;
