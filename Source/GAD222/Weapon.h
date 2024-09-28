@@ -35,6 +35,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	class UNiagaraSystem* FireEffectMuzzle;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float TraceLength{ 1000.0f };
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	class UNiagaraSystem* Impact;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

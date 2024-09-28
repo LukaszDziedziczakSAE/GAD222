@@ -59,6 +59,7 @@ void UWeaponManagerComponent::SpawnWeapon()
 	CurrentWeapon->AttachToComponent(PlayerCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, TEXT("Hand_Right"));
 	CurrentWeapon->SetActorRelativeLocation(Weapons[0].RelativeLocation);
 	CurrentWeapon->SetActorRelativeRotation(Weapons[0].RelativeRotation);
+	CurrentWeapon->SetOwner(GetOwner());
 }
 
 void UWeaponManagerComponent::DespawnWeapon()

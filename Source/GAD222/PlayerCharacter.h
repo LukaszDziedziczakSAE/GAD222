@@ -56,4 +56,7 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnAimStopDelegate OnAimStop;
+
+	UFUNCTION()
+	UCameraComponent* GetCamera() { return Camera; }
 };
