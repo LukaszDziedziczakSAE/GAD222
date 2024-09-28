@@ -5,6 +5,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "WeaponManagerComponent.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -17,6 +18,8 @@ APlayerCharacter::APlayerCharacter()
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera Component"));
 	Camera->SetupAttachment(SpringArm);
+
+	WeaponManagerComponent = CreateDefaultSubobject<UWeaponManagerComponent>(TEXT("Weapon Manager Component"));
 }
 
 // Called when the game starts or when spawned

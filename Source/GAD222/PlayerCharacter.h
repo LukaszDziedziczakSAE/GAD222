@@ -29,6 +29,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UCameraComponent* Camera;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UWeaponManagerComponent* WeaponManagerComponent;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool bIsAiming;
 

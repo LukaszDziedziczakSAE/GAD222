@@ -8,5 +8,7 @@ UENUM(BlueprintType)
 enum EWeaponType
 {
 	None UMETA(DisplayName = "None"),
-	Pistol UMETA(DisplayName = "Rifle")
+	Pistol UMETA(DisplayName = "Pistol"),
+	Rifle UMETA(DisplayName = "Rifle"),
+	Shotgun UMETA(DisplayName = "Shotgun")
 };
