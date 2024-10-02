@@ -6,6 +6,7 @@
 #include "Sound/SoundCue.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
+#include "ZombieCharacter.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 // Sets default values
@@ -66,18 +67,17 @@ void AWeapon::Fire()
 		TraceParams
 	))
 	{
-		UPrimitiveComponent* HitComponent = HitResult.GetComponent();
-		USkeletalMeshComponent* HitSkeletalMeshComponent = Cast<USkeletalMeshComponent>(HitComponent);
-		UE_LOG(LogTemp, Warning, TEXT("Hit %s"), *HitComponent->GetName());
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), Impact, HitResult.Location);
 
-		if (HitComponent->GetName() != "CharacterMesh0")
+		USkeletalMeshComponent* HitSkeletalMeshComponent = Cast<USkeletalMeshComponent>(HitResult.GetComponent());
+		AZombieCharacter* Zombie = Cast<AZombieCharacter>(HitResult.GetActor());
+
+		if (Zombie != nullptr && HitSkeletalMeshComponent != nullptr)
 		{
-			HitSkeletalMeshComponent->Stop();
-			HitComponent->DetachFromParent(true);
-			HitComponent->SetSimulatePhysics(true);
+			Zombie->BodyPartHit(HitSkeletalMeshComponent);
 		}
 		
+		UE_LOG(LogTemp, Warning, TEXT("Hit %s"), *HitResult.GetComponent()->GetName());
 	}
 
 	else

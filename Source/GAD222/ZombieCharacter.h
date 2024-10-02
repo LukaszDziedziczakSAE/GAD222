@@ -4,7 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "EBodyPart.h"
 #include "ZombieCharacter.generated.h"
+
+UENUM(BlueprintType)
+enum EZombieLocomotion
+{
+	BothLegs UMETA(DisplayName = "Both Legs"),
+	LeftLegOnly UMETA(DisplayName = "Left Leg Only"),
+	RightLegOnly UMETA(DisplayName = "Right Leg Only"),
+	NoLegs UMETA(DisplayName = "No Legs")
+};
 
 UCLASS()
 class GAD222_API AZombieCharacter : public ACharacter
@@ -26,4 +36,33 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	class USkeletalMeshComponent* Head;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	USkeletalMeshComponent* LeftArm;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	USkeletalMeshComponent* RightArm;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	USkeletalMeshComponent* LeftLeg;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	USkeletalMeshComponent* RightLeg;
+
+	UFUNCTION(BlueprintCallable)
+	void DetachBodyPart(USkeletalMeshComponent* BodyPart);
+
+	UFUNCTION(BlueprintCallable)
+	void BodyPartHit(USkeletalMeshComponent* BodyPart);
+
+	UFUNCTION(BlueprintPure)
+	TEnumAsByte<EZombieLocomotion> GetZombieLocomotion();
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool bHasLeftLeg{ true };
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool bHasRightLeg{ true };
 };
