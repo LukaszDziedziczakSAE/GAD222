@@ -2,6 +2,7 @@
 
 
 #include "ZombieCharacter.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 AZombieCharacter::AZombieCharacter()
@@ -23,6 +24,15 @@ AZombieCharacter::AZombieCharacter()
 
 	RightLeg = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Right Leg"));
 	RightLeg->SetupAttachment(GetMesh());
+
+	Shirt = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Shirt"));
+	Shirt->SetupAttachment(GetMesh());
+
+	Pants = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Pants"));
+	Pants->SetupAttachment(GetMesh());
+
+	Hair = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Hair"));
+	Hair->SetupAttachment(Head);
 }
 
 // Called when the game starts or when spawned
@@ -48,9 +58,18 @@ void AZombieCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 void AZombieCharacter::DetachBodyPart(USkeletalMeshComponent* BodyPart)
 {
+	if (BodyPart == Head)
+	{
+		Hair->Stop();
+		//Hair->DetachFromParent(true);
+		Hair->SetSimulatePhysics(true);
+	}
+
 	BodyPart->Stop();
 	BodyPart->DetachFromParent(true);
 	BodyPart->SetSimulatePhysics(true);
+
+	
 }
 
 void AZombieCharacter::BodyPartHit(USkeletalMeshComponent* BodyPart)
@@ -69,5 +88,13 @@ TEnumAsByte<EZombieLocomotion> AZombieCharacter::GetZombieLocomotion()
 	else if (bHasLeftLeg) return EZombieLocomotion::LeftLegOnly;
 	else if (bHasRightLeg) return EZombieLocomotion::RightLegOnly;
 	else return EZombieLocomotion::NoLegs;
+}
+
+void AZombieCharacter::SetMovementSpeed()
+{
+	if (bHasLeftLeg && bHasRightLeg) GetCharacterMovement()->MaxWalkSpeed = WalkingSpeed;
+	else if (bHasLeftLeg) GetCharacterMovement()->MaxWalkSpeed = OneLegWalkingSpeed;
+	else if (bHasRightLeg) GetCharacterMovement()->MaxWalkSpeed = OneLegWalkingSpeed;
+	else GetCharacterMovement()->MaxWalkSpeed = CrawlingSpeed;
 }
 

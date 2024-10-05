@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "EBodyPart.h"
+#include "EZombieBehaviour.h"
 #include "ZombieCharacter.generated.h"
 
 UENUM(BlueprintType)
@@ -29,6 +30,18 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float WalkingSpeed{100.0f};
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float RunningSpeed{ 600.0f };
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float OneLegWalkingSpeed{ 50.0f };
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float CrawlingSpeed{ 50.0f };
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -51,6 +64,15 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	USkeletalMeshComponent* RightLeg;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	USkeletalMeshComponent* Shirt;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	USkeletalMeshComponent* Pants;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	USkeletalMeshComponent* Hair;
+
 	UFUNCTION(BlueprintCallable)
 	void DetachBodyPart(USkeletalMeshComponent* BodyPart);
 
@@ -65,4 +87,10 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	bool bHasRightLeg{ true };
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TEnumAsByte<EZombieBehaviour> Behaviour;
+
+	UFUNCTION(BlueprintCallable)
+	void SetMovementSpeed();
 };
