@@ -14,6 +14,10 @@ class GAD222_API AInteractableKeycardReader : public AInteractable
 {
 	GENERATED_BODY()
 
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	class ADoor* Door;
+
 public:
 	virtual void Interact() override;
 	

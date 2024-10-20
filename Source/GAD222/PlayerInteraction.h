@@ -24,6 +24,12 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class AInteractable* Interactable;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int KeycardLevel;
+
+	UFUNCTION(BlueprintCallable)
+	void Interact();
 };

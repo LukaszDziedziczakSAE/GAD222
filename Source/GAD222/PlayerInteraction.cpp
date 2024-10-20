@@ -2,6 +2,7 @@
 
 
 #include "PlayerInteraction.h"
+#include "Interactable.h"
 
 // Sets default values for this component's properties
 UPlayerInteraction::UPlayerInteraction()
@@ -30,5 +31,13 @@ void UPlayerInteraction::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+}
+
+void UPlayerInteraction::Interact()
+{
+	if (Interactable != nullptr)
+	{
+		Interactable->Interact();
+	}
 }
 

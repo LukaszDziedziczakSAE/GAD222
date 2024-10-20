@@ -5,6 +5,7 @@
 #include "PlayerCharacter.h"
 #include "WeaponManagerComponent.h"
 #include "PlayerInteraction.h"
+#include "Components/SphereComponent.h"
 
 // Sets default values
 APickUp::APickUp()
@@ -12,6 +13,12 @@ APickUp::APickUp()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
+	SetRootComponent(Mesh);
+
+	CollisionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Collision Sphere"));
+	CollisionSphere->SetupAttachment(Mesh);
+	CollisionSphere->OnComponentBeginOverlap.AddDynamic(this, &APickUp::OnOverlapBegin);
 }
 
 // Called when the game starts or when spawned
@@ -19,6 +26,16 @@ void APickUp::BeginPlay()
 {
 	Super::BeginPlay();
 	
+}
+
+void APickUp::OnOverlapBegin(UPrimitiveComponent* newComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(OtherActor);
+	if (PlayerCharacter != nullptr)
+	{
+		PickUp(PlayerCharacter);
+		Destroy();
+	}
 }
 
 // Called every frame

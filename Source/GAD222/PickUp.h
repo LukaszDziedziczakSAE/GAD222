@@ -32,11 +32,20 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TEnumAsByte<EPickUpType> PickUpType;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UStaticMeshComponent* Mesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	class USphereComponent* CollisionSphere;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int Amount;
+
+	UFUNCTION()
+	virtual void OnOverlapBegin(class UPrimitiveComponent* newComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 public:	
 	// Called every frame
