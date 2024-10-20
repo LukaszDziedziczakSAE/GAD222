@@ -3,3 +3,7 @@
 
 #include "InteractableKeycardReader.h"
 
+void AInteractableKeycardReader::Interact()
+{
+	Super::Interact();
+}
