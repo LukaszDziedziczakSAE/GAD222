@@ -34,6 +34,12 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	class AWeapon* CurrentWeapon;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	bool HasPistol;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int PistolAmmo;
+
 	UFUNCTION(BlueprintCallable)
 	void EquipWeapon();
 

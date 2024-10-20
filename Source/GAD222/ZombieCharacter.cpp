@@ -66,7 +66,7 @@ void AZombieCharacter::DetachBodyPart(USkeletalMeshComponent* BodyPart)
 	}
 
 	BodyPart->Stop();
-	BodyPart->DetachFromParent(true);
+	BodyPart->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
 	BodyPart->SetSimulatePhysics(true);
 
 	
