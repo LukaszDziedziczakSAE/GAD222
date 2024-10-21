@@ -3,13 +3,22 @@
 
 #include "InteractableKeycardReader.h"
 #include "Door.h"
+#include "PlayerCharacter.h"
+#include "PlayerInteraction.h"
 
-void AInteractableKeycardReader::Interact()
+void AInteractableKeycardReader::Interact(APlayerCharacter* PlayerCharacter)
 {
+	if (!CanInteract(PlayerCharacter)) return;
+
 	if (Door != nullptr)
 	{
-		Door->IsLocked = false;
+		Door->bIsLocked = false;
 	}
 
-	Super::Interact();
+	Super::Interact(PlayerCharacter);
+}
+
+bool AInteractableKeycardReader::CanInteract(APlayerCharacter* PlayerCharacter)
+{
+	return PlayerCharacter->PlayerInteraction->KeycardLevel >= SecutiyLevel;
 }

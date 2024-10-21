@@ -53,8 +53,13 @@ void AInteractable::Tick(float DeltaTime)
 
 }
 
-void AInteractable::Interact()
+void AInteractable::Interact(APlayerCharacter* PlayerCharacter)
 {
 
+}
+
+bool AInteractable::CanInteract(APlayerCharacter* PlayerCharacter)
+{
+	return true;
 }
 

@@ -6,6 +6,9 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "WeaponManagerComponent.h"
+#include "GameFramework/Pawn.h"
+#include "GameFramework/PlayerController.h"
+#include "ZombieStoryHUD.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -28,6 +31,8 @@ void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	if (PlayerController != nullptr) HUD = Cast<AZombieStoryHUD>(PlayerController->GetHUD());
 }
 
 // Called every frame
@@ -64,4 +69,44 @@ void APlayerCharacter::StopAiming()
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	bIsAiming = false;
 	OnAimStop.Broadcast();
+}
+
+void APlayerCharacter::SwitchCamera(AActor* NewViewTarget)
+{
+	if (bInComputerView) return;
+
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	if (PlayerController == nullptr) return;
+	FViewTargetTransitionParams ViewTargetTransitionParams;
+	ViewTargetTransitionParams.BlendFunction = EViewTargetBlendFunction::VTBlend_EaseInOut;
+	ViewTargetTransitionParams.BlendTime = 0.5f;
+	PlayerController->SetViewTarget(NewViewTarget, ViewTargetTransitionParams);
+	if (HUD != nullptr)
+	{
+		HUD->RemoveAllFromViewport();
+
+		FTimerHandle CameraSwitchTimerHandle;
+		GetWorld()->GetTimerManager().SetTimer(CameraSwitchTimerHandle, HUD, &AZombieStoryHUD::SwitchToComputerView, 0.5f, false);
+	}
+	bInComputerView = true;
+}
+
+void APlayerCharacter::SwitchBackToPlayerCamera()
+{
+	if (!bInComputerView) return;
+
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	if (PlayerController == nullptr) return;
+	FViewTargetTransitionParams ViewTargetTransitionParams;
+	ViewTargetTransitionParams.BlendFunction = EViewTargetBlendFunction::VTBlend_EaseInOut;
+	ViewTargetTransitionParams.BlendTime = 0.5f;
+	PlayerController->SetViewTarget(this, ViewTargetTransitionParams);
+	if (HUD != nullptr)
+	{
+		HUD->RemoveAllFromViewport();
+
+		FTimerHandle CameraSwitchTimerHandle;
+		GetWorld()->GetTimerManager().SetTimer(CameraSwitchTimerHandle, HUD, &AZombieStoryHUD::SwitchToPlayerView, 0.5f, false);
+	}
+	bInComputerView = false;
 }

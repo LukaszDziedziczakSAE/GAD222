@@ -20,7 +20,7 @@ void UPlayerInteraction::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
+	PlayerCharacter = Cast<APlayerCharacter>(GetOwner());
 	
 }
 
@@ -35,9 +35,9 @@ void UPlayerInteraction::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 
 void UPlayerInteraction::Interact()
 {
-	if (Interactable != nullptr)
+	if (PlayerCharacter != nullptr && Interactable != nullptr)
 	{
-		Interactable->Interact();
+		Interactable->Interact(PlayerCharacter);
 	}
 }
 

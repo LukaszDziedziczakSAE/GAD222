@@ -35,6 +35,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TEnumAsByte<EWeaponType> CurrentWeaponType;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class AZombieStoryHUD* HUD;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -62,4 +65,13 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UPlayerInteraction* PlayerInteraction;
+
+	UFUNCTION(BlueprintCallable)
+	void SwitchCamera(AActor* NewViewTarget);
+
+	UFUNCTION(BlueprintCallable)
+	void SwitchBackToPlayerCamera();
+
+	UPROPERTY()
+	bool bInComputerView;
 };

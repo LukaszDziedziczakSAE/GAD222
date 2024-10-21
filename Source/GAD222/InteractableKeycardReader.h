@@ -18,7 +18,12 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	class ADoor* Door;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int SecutiyLevel;
+
 public:
-	virtual void Interact() override;
+	virtual void Interact(class APlayerCharacter* PlayerCharacter) override;
+
+	virtual bool CanInteract(APlayerCharacter* PlayerCharacter) override;
 	
 };

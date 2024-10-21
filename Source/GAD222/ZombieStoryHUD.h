@@ -13,5 +13,15 @@ UCLASS()
 class GAD222_API AZombieStoryHUD : public AHUD
 {
 	GENERATED_BODY()
+
+public:
+	UFUNCTION(BlueprintNativeEvent)
+	void RemoveAllFromViewport();
+
+	UFUNCTION(BlueprintNativeEvent)
+	void SwitchToComputerView();
+
+	UFUNCTION(BlueprintNativeEvent)
+	void SwitchToPlayerView();
 	
 };

@@ -3,3 +3,14 @@
 
 #include "ZombieStoryHUD.h"
 
+void AZombieStoryHUD::SwitchToComputerView_Implementation()
+{
+}
+
+void AZombieStoryHUD::SwitchToPlayerView_Implementation()
+{
+}
+
+void AZombieStoryHUD::RemoveAllFromViewport_Implementation()
+{
+}

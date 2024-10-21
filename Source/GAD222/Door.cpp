@@ -100,7 +100,7 @@ void ADoor::ClosingTick()
 
 		if (bLockOnClose)
 		{
-			IsLocked = true;
+			bIsLocked = true;
 		}
 	}
 
@@ -136,14 +136,14 @@ void ADoor::Tick(float DeltaTime)
 		break;
 
 	case DoorOpen:
-		if (OverlappingActors.Num() == 0)
+		if (!bManualOverride && OverlappingActors.Num() == 0)
 		{
 			CloseDoor();
 		}
 		break;
 
 	case DoorClosed:
-		if (OverlappingActors.Num() > 0 && !IsLocked)
+		if (!bManualOverride && OverlappingActors.Num() > 0 && !bIsLocked)
 		{
 			OpenDoor();
 		}

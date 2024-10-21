@@ -1,29 +1,38 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Lukasz Dziedziczak 2024
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Interactable.generated.h"
+#include "Hazzard.generated.h"
 
 UCLASS()
-class GAD222_API AInteractable : public AActor
+class GAD222_API AHazzard : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	AInteractable();
+	AHazzard();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	UStaticMeshComponent* Mesh;
+	bool bHazzardIsActive;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	class USphereComponent* CollisionSphere;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TArray<class UParticleSystemComponent*> Effects;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	USceneComponent* RootComp;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class UAudioComponent* AudioComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class UBoxComponent* BoxCollider;
 
 	UFUNCTION()
 	virtual void OnOverlapBegin(class UPrimitiveComponent* newComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -35,15 +44,15 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	FString InteractionText;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	FString InteractionInvalidText;
+	UFUNCTION(BlueprintCallable)
+	void TurnOnHazzard();
 
 	UFUNCTION(BlueprintCallable)
-	virtual void Interact(class APlayerCharacter* PlayerCharacter);
+	void TurnOffHazzard();
 
 	UFUNCTION(BlueprintCallable)
-	virtual bool CanInteract(APlayerCharacter* PlayerCharacter);
+	void ToggleHazzard();
+
+	UFUNCTION(BlueprintPure)
+	bool IsActive() { return bHazzardIsActive; }
 };

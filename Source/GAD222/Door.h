@@ -73,6 +73,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	bool bLockOnClose;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	bool bManualOverride;
+
 	UFUNCTION()
 	void OpeningTick();
 
@@ -87,7 +90,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	bool IsLocked;
+	bool bIsLocked;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TEnumAsByte<EDoorState> DoorState;
