@@ -12,7 +12,7 @@ enum EDoorState
 	DoorOpen UMETA(DisplayName = "Open"),
 	DoorClosed UMETA(DisplayName = "Closed"),
 	DoorOpening UMETA(DisplayName = "Opening"),
-	DoorCloseing UMETA(DisplayName = "Closeing")
+	DoorClosing UMETA(DisplayName = "Closing")
 };
 
 UCLASS()
@@ -37,8 +37,26 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UStaticMeshComponent* DoorMesh2;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class UBoxComponent* BoxCollider;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class UParticleSystemComponent* OpenEffect;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class UAudioComponent* AudioComponent;
+
+	UFUNCTION()
+	virtual void OnOverlapBegin(class UPrimitiveComponent* newComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TArray<AActor*> OverlappingActors;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float OpeningTime;
+	float OpeningTime{ 1.0f };
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FVector OpenPosition;
@@ -46,11 +64,37 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	FVector ClosedPosition;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FVector OpenPosition2;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	FVector ClosedPosition2;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	bool bLockOnClose;
+
+	UFUNCTION()
+	void OpeningTick();
+
+	UFUNCTION()
+	void ClosingTick();
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	float ActionTimer;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	bool IsLocked;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TEnumAsByte<EDoorState> DoorState;
+
+	UFUNCTION(BlueprintCallable)
+	void OpenDoor();
+
+	UFUNCTION(BlueprintCallable)
+	void CloseDoor();
 };
