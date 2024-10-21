@@ -31,6 +31,7 @@ ADoor::ADoor()
 
 	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio Component"));
 	AudioComponent->SetupAttachment(RootComp);
+	AudioComponent->bAutoActivate = false;
 }
 
 // Called when the game starts or when spawned
@@ -160,6 +161,9 @@ void ADoor::OpenDoor()
 	{
 		OpenEffect->Activate(true);
 	}
+
+	AudioComponent->SetSound(OpeningSound);
+	AudioComponent->Play();
 }
 
 void ADoor::CloseDoor()
@@ -171,5 +175,8 @@ void ADoor::CloseDoor()
 	{
 		OpenEffect->Deactivate();
 	}
+
+	AudioComponent->SetSound(ClosingSound);
+	AudioComponent->Play();
 }
 

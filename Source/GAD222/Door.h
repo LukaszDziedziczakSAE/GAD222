@@ -46,6 +46,12 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UAudioComponent* AudioComponent;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	USoundBase* OpeningSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	USoundBase* ClosingSound;
+
 	UFUNCTION()
 	virtual void OnOverlapBegin(class UPrimitiveComponent* newComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
