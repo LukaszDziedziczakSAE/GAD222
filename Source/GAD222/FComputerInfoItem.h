@@ -19,4 +19,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UMediaSource* Media;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class ADoor* Door;
 };
