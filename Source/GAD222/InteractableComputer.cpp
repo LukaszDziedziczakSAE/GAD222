@@ -4,11 +4,26 @@
 #include "InteractableComputer.h"
 #include "Camera/CameraComponent.h"
 #include "PlayerCharacter.h"
+#include "MediaPlayer.h"
+#include "MediaSoundComponent.h"
 
 AInteractableComputer::AInteractableComputer()
 {
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera Component"));
 	Camera->SetupAttachment(GetRootComponent());
+
+	VideoScreen = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Video Screen"));
+	VideoScreen->SetupAttachment(GetRootComponent());
+
+	MediaSoundComponent = CreateDefaultSubobject<UMediaSoundComponent>(TEXT("Media Sound Component"));
+	MediaSoundComponent->SetupAttachment(GetRootComponent());
+
+	
+}
+
+void AInteractableComputer::BeginPlay()
+{
+	Super::BeginPlay();
 }
 
 void AInteractableComputer::Interact(APlayerCharacter* PlayerCharacter)
@@ -24,3 +39,22 @@ bool AInteractableComputer::CanInteract(APlayerCharacter* PlayerCharacter)
 {
 	return !PlayerCharacter->bInComputerView;
 }
+
+void AInteractableComputer::PlayVideo(UMediaSource* Media)
+{
+	VideoScreen->SetVisibility(true);
+	MediaPlayer->OpenSource(Media);
+	MediaPlayer->Play();
+
+	MediaPlayer->OnEndReached.AddDynamic(this, &AInteractableComputer::FinishVideo);
+}
+
+void AInteractableComputer::FinishVideo()
+{
+	MediaPlayer->Pause();
+	VideoScreen->SetVisibility(false);
+
+	MediaPlayer->OnEndReached.Clear();
+}
+
+

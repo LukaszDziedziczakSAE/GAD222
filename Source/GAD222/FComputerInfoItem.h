@@ -12,5 +12,11 @@ struct GAD222_API FComputerInfoItem
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FString Label;
+	FText Label;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FText TextData;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UMediaSource* Media;
 };

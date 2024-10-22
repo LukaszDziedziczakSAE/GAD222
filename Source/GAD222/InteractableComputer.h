@@ -18,15 +18,31 @@ public:
 	AInteractableComputer();
 
 protected:
+	virtual void BeginPlay() override;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UCameraComponent* Camera;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<struct FComputerInfoItem> ComputerInfoItems;
+	UStaticMeshComponent* VideoScreen;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UMediaPlayer* MediaPlayer;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UMediaSoundComponent* MediaSoundComponent;
 
 public:
 	virtual void Interact(class APlayerCharacter* PlayerCharacter) override;
 
 	virtual bool CanInteract(APlayerCharacter* PlayerCharacter) override;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<struct FComputerInfoItem> ComputerInfoItems;
+
+	UFUNCTION(BlueprintCallable)
+	void PlayVideo(class UMediaSource* Media);
+
+	UFUNCTION(BlueprintCallable)
+	void FinishVideo();
 };
