@@ -38,6 +38,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class AZombieStoryHUD* HUD;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	class UPlayerHealth* PlayerHealth;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

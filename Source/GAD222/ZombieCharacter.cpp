@@ -3,6 +3,10 @@
 
 #include "ZombieCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "Components/SphereComponent.h"
+#include "PlayerCharacter.h"
+#include "ZombieHealth.h"
 
 // Sets default values
 AZombieCharacter::AZombieCharacter()
@@ -33,6 +37,20 @@ AZombieCharacter::AZombieCharacter()
 
 	Hair = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Hair"));
 	Hair->SetupAttachment(Head);
+
+	LeftHandSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Left Hand Sphere"));
+	LeftHandSphere->SetupAttachment(GetMesh(), TEXT("LeftHand"));
+	LeftHandSphere->SetRelativeLocation(FVector{ 15.0f, 0,0 });
+	LeftHandSphere->SetSphereRadius(15.0f);
+	LeftHandSphere->OnComponentBeginOverlap.AddDynamic(this, &AZombieCharacter::OnOverlapLeftHandBegin);
+
+	RightHandSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Right Hand Sphere"));
+	RightHandSphere->SetupAttachment(GetMesh(), TEXT("RightHand"));
+	RightHandSphere->SetRelativeLocation(FVector{ -15.0f, 0,0 });
+	RightHandSphere->SetSphereRadius(15.0f);
+	RightHandSphere->OnComponentBeginOverlap.AddDynamic(this, &AZombieCharacter::OnOverlapRightHandBegin);
+
+	ZombieHealth = CreateDefaultSubobject<UZombieHealth>(TEXT("Zombie Health"));
 }
 
 // Called when the game starts or when spawned
@@ -40,6 +58,33 @@ void AZombieCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+}
+
+void AZombieCharacter::AttackComplete()
+{
+	bIsAttacking = false;
+}
+
+void AZombieCharacter::OnOverlapLeftHandBegin(UPrimitiveComponent* newComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (!bLeftHandAttacking) return;
+
+	APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(OtherActor);
+	if (IsValid(PlayerCharacter))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Hit Player"));
+	}
+}
+
+void AZombieCharacter::OnOverlapRightHandBegin(UPrimitiveComponent* newComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (!bRightHandAttacking) return;
+
+	APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(OtherActor);
+	if (IsValid(PlayerCharacter))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Hit Player"));
+	}
 }
 
 // Called every frame
@@ -96,5 +141,26 @@ void AZombieCharacter::SetMovementSpeed()
 	else if (bHasLeftLeg) GetCharacterMovement()->MaxWalkSpeed = OneLegWalkingSpeed;
 	else if (bHasRightLeg) GetCharacterMovement()->MaxWalkSpeed = OneLegWalkingSpeed;
 	else GetCharacterMovement()->MaxWalkSpeed = CrawlingSpeed;
+}
+
+void AZombieCharacter::Attack()
+{
+	if (bIsAttacking) return;
+	UE_LOG(LogTemp, Warning, TEXT("%s attacking"), *GetName());
+	bIsAttacking = true;
+
+	bool RandomBool = UKismetMathLibrary::RandomBool();
+	float t;
+	if (RandomBool)
+	{
+		t = PlayAnimMontage(LeftHandAttack, AttackRate);
+	}
+	else
+	{
+		t = PlayAnimMontage(RightHandAttack, AttackRate);
+	}
+	FTimerHandle AttackTimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(AttackTimerHandle, this, &AZombieCharacter::AttackComplete, t, false);
+
 }
 

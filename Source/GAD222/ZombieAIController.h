@@ -11,5 +11,20 @@ UCLASS()
 class GAD222_API AZombieAIController : public AAIController
 {
 	GENERATED_BODY()
+
+public:
+	AZombieAIController();
+
+protected:
+	virtual void BeginPlay() override;
+
+	UFUNCTION()
+	void OnTargetPerceptionUpdated(AActor* Actor, struct FAIStimulus Stimulus);
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	class UAIPerceptionComponent* AIPerceptionComponent;
 	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UBehaviorTree* BehaviorTree;
 };

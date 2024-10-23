@@ -8,6 +8,7 @@
 #include "EZombieBehaviour.h"
 #include "ZombieCharacter.generated.h"
 
+
 UENUM(BlueprintType)
 enum EZombieLocomotion
 {
@@ -41,6 +42,36 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float CrawlingSpeed{ 50.0f };
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UAnimMontage* LeftHandAttack;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UAnimMontage* RightHandAttack;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	class USphereComponent* LeftHandSphere;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	class USphereComponent* RightHandSphere;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool bIsAttacking;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float AttackRate{ 1.0f };
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	class UZombieHealth* ZombieHealth;
+
+	UFUNCTION()
+	void AttackComplete();
+
+	UFUNCTION()
+	virtual void OnOverlapLeftHandBegin(class UPrimitiveComponent* newComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	virtual void OnOverlapRightHandBegin(class UPrimitiveComponent* newComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 public:	
 	// Called every frame
@@ -91,6 +122,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TEnumAsByte<EZombieBehaviour> Behaviour;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool bLeftHandAttacking;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool bRightHandAttacking;
+
 	UFUNCTION(BlueprintCallable)
 	void SetMovementSpeed();
+
+	UFUNCTION(BlueprintCallable)
+	void Attack();
 };

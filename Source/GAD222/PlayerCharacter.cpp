@@ -24,6 +24,7 @@ APlayerCharacter::APlayerCharacter()
 
 	WeaponManagerComponent = CreateDefaultSubobject<UWeaponManagerComponent>(TEXT("Weapon Manager Component"));
 	PlayerInteraction = CreateDefaultSubobject<UPlayerInteraction>(TEXT("Player Interaction"));
+	PlayerHealth = CreateDefaultSubobject<UPlayerHealth>(TEXT("Player Health"));
 }
 
 // Called when the game starts or when spawned
