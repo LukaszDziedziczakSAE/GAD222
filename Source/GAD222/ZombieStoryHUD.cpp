@@ -14,3 +14,13 @@ void AZombieStoryHUD::SwitchToPlayerView_Implementation()
 void AZombieStoryHUD::RemoveAllFromViewport_Implementation()
 {
 }
+
+void AZombieStoryHUD::GamePaused_Implementation()
+{
+
+}
+
+void AZombieStoryHUD::GameUnpaused_Implementation()
+{
+
+}

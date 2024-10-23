@@ -24,4 +24,9 @@ public:
 	UFUNCTION(BlueprintNativeEvent)
 	void SwitchToPlayerView();
 	
+	UFUNCTION(BlueprintNativeEvent)
+	void GamePaused();
+
+	UFUNCTION(BlueprintNativeEvent)
+	void GameUnpaused();
 };

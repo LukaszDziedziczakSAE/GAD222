@@ -60,6 +60,9 @@ public:
 	UFUNCTION()
 	UCameraComponent* GetCamera() { return Camera; }
 
+	UFUNCTION()
+	bool IsAiming() { return bIsAiming; }
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UWeaponManagerComponent* WeaponManagerComponent;
 
