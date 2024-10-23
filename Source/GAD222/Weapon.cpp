@@ -8,6 +8,7 @@
 #include "NiagaraComponent.h"
 #include "ZombieCharacter.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "WeaponManagerComponent.h"
 
 // Sets default values
 AWeapon::AWeapon()
@@ -34,10 +35,17 @@ void AWeapon::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (TimeSinceLastFire < FireRate)
+	{
+		TimeSinceLastFire += DeltaTime;
+	}
 }
 
 void AWeapon::Fire()
 {
+	if (TimeSinceLastFire < FireRate) return;
+
+
 	//UE_LOG(LogTemp, Warning, TEXT("%s Firing"), *GetName());
 
 	UGameplayStatics::PlaySoundAtLocation(this, FireSoundCue, GetActorLocation());
@@ -84,5 +92,17 @@ void AWeapon::Fire()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("No Hit"));
 	}
+
+	TimeSinceLastFire = 0;
+	WeaponManagerComponent->PistolAmmo -= 1;
+}
+
+void AWeapon::Reload()
+{
+	int AmmoNeeded = MaxAmmo - WeaponManagerComponent->PistolAmmo;
+	int ReloadAmount = FMath::Clamp(AmmoNeeded, 0, WeaponManagerComponent->PistolAmmoStorage);
+
+	WeaponManagerComponent->PistolAmmoStorage -= ReloadAmount;
+	WeaponManagerComponent->PistolAmmo += ReloadAmount;
 }
 

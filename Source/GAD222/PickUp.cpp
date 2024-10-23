@@ -6,6 +6,7 @@
 #include "WeaponManagerComponent.h"
 #include "PlayerInteraction.h"
 #include "Components/SphereComponent.h"
+#include "Components/AudioComponent.h"
 
 // Sets default values
 APickUp::APickUp()
@@ -19,6 +20,10 @@ APickUp::APickUp()
 	CollisionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Collision Sphere"));
 	CollisionSphere->SetupAttachment(Mesh);
 	CollisionSphere->OnComponentBeginOverlap.AddDynamic(this, &APickUp::OnOverlapBegin);
+
+	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio Component"));
+	AudioComponent->SetupAttachment(Mesh);
+	AudioComponent->bAutoActivate = false;
 }
 
 // Called when the game starts or when spawned
@@ -34,7 +39,6 @@ void APickUp::OnOverlapBegin(UPrimitiveComponent* newComp, AActor* OtherActor, U
 	if (PlayerCharacter != nullptr)
 	{
 		PickUp(PlayerCharacter);
-		Destroy();
 	}
 }
 
@@ -67,12 +71,18 @@ void APickUp::PickUp(APlayerCharacter* PlayerCharacter)
 
 void APickUp::PickupPistol(APlayerCharacter* PlayerCharacter)
 {
+	if (PlayerCharacter->WeaponManagerComponent->HasPistol) return;
+
 	PlayerCharacter->WeaponManagerComponent->HasPistol = true;
+
+	Destroy();
 }
 
 void APickUp::PickupPistolAmmo(APlayerCharacter* PlayerCharacter)
 {
-	PlayerCharacter->WeaponManagerComponent->PistolAmmo += Amount;
+	PlayerCharacter->WeaponManagerComponent->PistolAmmoStorage += Amount;
+
+	Destroy();
 }
 
 void APickUp::PickupKeycard(APlayerCharacter* PlayerCharacter, int KeycardLevel)
@@ -81,5 +91,7 @@ void APickUp::PickupKeycard(APlayerCharacter* PlayerCharacter, int KeycardLevel)
 	{
 		PlayerCharacter->PlayerInteraction->KeycardLevel = KeycardLevel;
 	}
+
+	Destroy();
 }
 

@@ -27,6 +27,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class APlayerCharacter* PlayerCharacter;
 
+	UFUNCTION()
+	void ReloadAnimationComplete();
+
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
@@ -39,6 +42,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int PistolAmmo;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int PistolAmmoStorage;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool bIsReloading; 
 
 	UFUNCTION(BlueprintCallable)
 	void EquipWeapon();
@@ -57,4 +66,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void ReleaseTrigger();
+
+	UFUNCTION(BlueprintCallable)
+	void ReloadCurrentWeapon();
 };

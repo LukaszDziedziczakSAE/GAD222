@@ -41,6 +41,18 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	class UNiagaraSystem* Impact;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	int MaxAmmo{ 10 };
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float FireRate{ 0.1f };
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class UWeaponManagerComponent* WeaponManagerComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	float TimeSinceLastFire{ 100.0f };
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -50,4 +62,19 @@ public:
 
 	UFUNCTION()
 	void Fire();
+
+	UFUNCTION(BlueprintCallable)
+	void SetWeaponManagerComponent(UWeaponManagerComponent* WeaponManager) { WeaponManagerComponent = WeaponManager; }
+
+	UFUNCTION()
+	int GetMaxAmmo() { return MaxAmmo; }
+
+	UFUNCTION(BlueprintCallable)
+	void Reload();
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	class UAnimMontage* WeaponFire;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	class UAnimMontage* WeaponReload;
 };

@@ -26,6 +26,11 @@ void UWeaponManagerComponent::BeginPlay()
 }
 
 
+void UWeaponManagerComponent::ReloadAnimationComplete()
+{
+	bIsReloading = false;
+}
+
 // Called every frame
 void UWeaponManagerComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
@@ -36,6 +41,8 @@ void UWeaponManagerComponent::TickComponent(float DeltaTime, ELevelTick TickType
 
 void UWeaponManagerComponent::EquipWeapon()
 {
+	if (!HasPistol || bIsReloading) return;
+
 	if (CurrentWeapon == nullptr)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Spawning Weapon"));
@@ -59,6 +66,7 @@ void UWeaponManagerComponent::SpawnWeapon()
 	CurrentWeapon->AttachToComponent(PlayerCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, TEXT("Hand_Right"));
 	CurrentWeapon->SetActorRelativeLocation(Weapons[0].RelativeLocation);
 	CurrentWeapon->SetActorRelativeRotation(Weapons[0].RelativeRotation);
+	CurrentWeapon->SetWeaponManagerComponent(this);
 	CurrentWeapon->SetOwner(GetOwner());
 }
 
@@ -70,13 +78,34 @@ void UWeaponManagerComponent::DespawnWeapon()
 
 void UWeaponManagerComponent::PullTrigger()
 {
-	if (CurrentWeapon == nullptr) return;
+	if (CurrentWeapon == nullptr || bIsReloading) return;
+
+	if (PistolAmmo == 0)
+	{
+		ReloadCurrentWeapon();
+		return;
+	}
 
 	CurrentWeapon->Fire();
+	PlayerCharacter->PlayAnimMontage(CurrentWeapon->WeaponFire);
 }
 
 void UWeaponManagerComponent::ReleaseTrigger()
 {
+	
+}
 
+void UWeaponManagerComponent::ReloadCurrentWeapon()
+{
+	if (CurrentWeapon == nullptr ||
+		CurrentWeapon->GetMaxAmmo() == PistolAmmo ||
+		PistolAmmoStorage == 0 ||
+		bIsReloading)
+		return;
+
+	float t = PlayerCharacter->PlayAnimMontage(CurrentWeapon->WeaponReload);
+	bIsReloading = true;
+	FTimerHandle AttackTimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(AttackTimerHandle, this, &UWeaponManagerComponent::ReloadAnimationComplete, t, false);
 }
 
