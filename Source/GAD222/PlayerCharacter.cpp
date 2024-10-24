@@ -9,6 +9,7 @@
 #include "GameFramework/Pawn.h"
 #include "GameFramework/PlayerController.h"
 #include "ZombieStoryHUD.h"
+#include "PlayerHealth.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -34,6 +35,16 @@ void APlayerCharacter::BeginPlay()
 	
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 	if (PlayerController != nullptr) HUD = Cast<AZombieStoryHUD>(PlayerController->GetHUD());
+}
+
+void APlayerCharacter::DeathComplete()
+{
+	GetMesh()->Stop();
+
+	GetMesh()->SetAllBodiesSimulatePhysics(true);
+	GetMesh()->SetSimulatePhysics(true);
+	GetMesh()->WakeAllRigidBodies();
+	GetMesh()->SetCollisionProfileName(TEXT("Pawn"));
 }
 
 // Called every frame
@@ -110,4 +121,21 @@ void APlayerCharacter::SwitchBackToPlayerCamera()
 		GetWorld()->GetTimerManager().SetTimer(CameraSwitchTimerHandle, HUD, &AZombieStoryHUD::SwitchToPlayerView, 0.5f, false);
 	}
 	bInComputerView = false;
+}
+
+void APlayerCharacter::Death()
+{
+	bIsAlive = false;
+
+	/*float t = PlayAnimMontage(DeathMontage, 2);
+	t -= 0.5f;
+	FTimerHandle AttackTimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(AttackTimerHandle, this, &APlayerCharacter::DeathComplete, t, false);*/
+
+	DeathComplete();
+}
+
+void APlayerCharacter::InflictDamage(float Amount)
+{
+	PlayerHealth->TakeHealth(Amount);
 }

@@ -2,6 +2,7 @@
 
 
 #include "PlayerHealth.h"
+#include "PlayerCharacter.h"
 
 // Sets default values for this component's properties
 UPlayerHealth::UPlayerHealth()
@@ -19,7 +20,9 @@ void UPlayerHealth::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
+	PlayerCharacter = Cast<APlayerCharacter>(GetOwner());
+
+	CurrentHealth = MaxHealth;
 	
 }
 
@@ -30,5 +33,17 @@ void UPlayerHealth::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+}
+
+void UPlayerHealth::TakeHealth(float Amount)
+{
+	if (!PlayerCharacter->IsAlive()) return;
+
+	CurrentHealth = FMath::Clamp(CurrentHealth - Amount, 0, MaxHealth);
+
+	if (CurrentHealth == 0)
+	{
+		PlayerCharacter->Death();
+	}
 }
 

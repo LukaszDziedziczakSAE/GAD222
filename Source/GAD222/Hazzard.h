@@ -40,6 +40,12 @@ protected:
 	UFUNCTION()
 	void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TArray<ACharacter*> CharactersInHazzard;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float DamageRate;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

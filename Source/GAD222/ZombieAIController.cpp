@@ -6,6 +6,7 @@
 #include "Perception/AIPerceptionTypes.h"
 #include "PlayerCharacter.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "BrainComponent.h"
 
 AZombieAIController::AZombieAIController()
 {
@@ -20,6 +21,8 @@ void AZombieAIController::BeginPlay()
 	RunBehaviorTree(BehaviorTree);
 
 	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &AZombieAIController::OnTargetPerceptionUpdated);
+
+	
 }
 
 void AZombieAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
@@ -33,4 +36,10 @@ void AZombieAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus S
 	{
 		GetBlackboardComponent()->SetValueAsObject(TEXT("PlayerCharacter"), PlayerCharacter);
 	}
+}
+
+void AZombieAIController::StopBehaviourTree()
+{
+	StopMovement();
+	BrainComponent->StopLogic(TEXT("Death"));
 }

@@ -42,6 +42,9 @@ protected:
 	class UNiagaraSystem* Impact;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	class UNiagaraSystem* ImpactFlesh;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	int MaxAmmo{ 10 };
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
@@ -52,6 +55,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	float TimeSinceLastFire{ 100.0f };
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	class UNiagaraComponent* MuzzleFlash;
 
 public:	
 	// Called every frame

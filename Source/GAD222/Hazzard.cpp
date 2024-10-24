@@ -5,6 +5,8 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "Components/AudioComponent.h"
 #include "Components/BoxComponent.h"
+#include "PlayerCharacter.h"
+#include "ZombieCharacter.h"
 
 // Sets default values
 AHazzard::AHazzard()
@@ -47,12 +49,24 @@ void AHazzard::BeginPlay()
 
 void AHazzard::OnOverlapBegin(UPrimitiveComponent* newComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	ACharacter* Character = Cast<ACharacter>(OtherActor);
 
+	if (Character != nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s entered hazzard"), *Character->GetName());
+		CharactersInHazzard.Add(Character);
+	}
 }
 
 void AHazzard::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
+	ACharacter* Character = Cast<ACharacter>(OtherActor);
 
+	if (Character != nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s exited hazzard"), *Character->GetName());
+		CharactersInHazzard.Remove(Character);
+	}
 }
 
 // Called every frame
@@ -60,6 +74,25 @@ void AHazzard::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (!bHazzardIsActive) return;
+
+	for (ACharacter* Character : CharactersInHazzard)
+	{
+		APlayerCharacter* Player = Cast<APlayerCharacter>(Character);
+		if (Player != nullptr)
+		{
+			Player->InflictDamage(DamageRate * DeltaTime);
+		}
+		else
+		{
+			AZombieCharacter* Zombie = Cast<AZombieCharacter>(Character);
+			if (Zombie != nullptr)
+			{
+				Zombie->InflictDamage(DamageRate * DeltaTime);
+				Zombie->StartBurning();
+			}
+		}
+	}
 }
 
 void AHazzard::TurnOnHazzard()

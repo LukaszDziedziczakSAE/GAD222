@@ -27,4 +27,7 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UBehaviorTree* BehaviorTree;
+
+	UFUNCTION(BlueprintCallable)
+	void StopBehaviourTree();
 };

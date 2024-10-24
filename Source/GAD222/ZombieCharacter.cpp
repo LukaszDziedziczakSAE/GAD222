@@ -7,6 +7,9 @@
 #include "Components/SphereComponent.h"
 #include "PlayerCharacter.h"
 #include "ZombieHealth.h"
+#include "ZombieAIController.h"
+#include "Components/CapsuleComponent.h"
+#include "NiagaraComponent.h"
 
 // Sets default values
 AZombieCharacter::AZombieCharacter()
@@ -51,6 +54,11 @@ AZombieCharacter::AZombieCharacter()
 	RightHandSphere->OnComponentBeginOverlap.AddDynamic(this, &AZombieCharacter::OnOverlapRightHandBegin);
 
 	ZombieHealth = CreateDefaultSubobject<UZombieHealth>(TEXT("Zombie Health"));
+
+	BurningFire = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Burning Fire"));
+	BurningFire->SetupAttachment(GetRootComponent());
+	BurningFire->SetRelativeLocation(FVector{0,0,-84.0f});
+	BurningFire->bAutoActivate = false;
 }
 
 // Called when the game starts or when spawned
@@ -73,6 +81,8 @@ void AZombieCharacter::OnOverlapLeftHandBegin(UPrimitiveComponent* newComp, AAct
 	if (IsValid(PlayerCharacter))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Hit Player"));
+
+		PlayerCharacter->InflictDamage(HandAttackPower);
 	}
 }
 
@@ -84,7 +94,20 @@ void AZombieCharacter::OnOverlapRightHandBegin(UPrimitiveComponent* newComp, AAc
 	if (IsValid(PlayerCharacter))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Hit Player"));
+
+		PlayerCharacter->InflictDamage(HandAttackPower);
 	}
+}
+
+void AZombieCharacter::DeathComplete()
+{
+	GetMesh()->Stop();
+
+	/*GetMesh()->SetAllBodiesSimulatePhysics(true);
+	GetMesh()->SetSimulatePhysics(true);
+	GetMesh()->WakeAllRigidBodies();
+	GetMesh()->SetCollisionProfileName(TEXT("Pawn"));*/
+
 }
 
 // Called every frame
@@ -162,5 +185,39 @@ void AZombieCharacter::Attack()
 	FTimerHandle AttackTimerHandle;
 	GetWorld()->GetTimerManager().SetTimer(AttackTimerHandle, this, &AZombieCharacter::AttackComplete, t, false);
 
+}
+
+void AZombieCharacter::Death()
+{
+	bIsAlive = false;
+
+	AZombieAIController* AI = Cast<AZombieAIController>(GetController());
+	if (AI != nullptr) AI->StopBehaviourTree();
+
+	/*float t = PlayAnimMontage(DeathMontage, 2);
+	t -= 0.5f;
+	FTimerHandle AttackTimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(AttackTimerHandle, this, &AZombieCharacter::DeathComplete, t, false);*/
+
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
+}
+
+void AZombieCharacter::InflictDamage(float Amount, USkeletalMeshComponent* BodyPart)
+{
+	ZombieHealth->TakeHealth(Amount, BodyPartFromMesh(BodyPart));
+}
+
+TEnumAsByte<EBodyPart> AZombieCharacter::BodyPartFromMesh(USkeletalMeshComponent* BodyPart)
+{
+	if (BodyPart == nullptr) return EBodyPart::Torso;
+
+	return TEnumAsByte<EBodyPart>();
+}
+
+void AZombieCharacter::StartBurning()
+{
+	if (BurningFire->IsActive()) return;
+
+	BurningFire->Activate();
 }
 

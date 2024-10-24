@@ -41,6 +41,15 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	class UPlayerHealth* PlayerHealth;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool bIsAlive{ true };
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	UAnimMontage* DeathMontage;
+
+	UFUNCTION()
+	void DeathComplete();
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -80,4 +89,13 @@ public:
 
 	UPROPERTY()
 	bool bInComputerView;
+
+	UFUNCTION(BlueprintPure)
+	bool IsAlive() { return bIsAlive; }
+
+	UFUNCTION(BlueprintCallable)
+	void Death();
+
+	UFUNCTION(BlueprintCallable)
+	void InflictDamage(float Amount);
 };

@@ -67,7 +67,7 @@ void AZombieGame_PlayerController::SetupInputComponent()
 
 void AZombieGame_PlayerController::Move(const FInputActionValue& Value)
 {
-	if (PlayerCharacter == nullptr) return;
+	if (PlayerCharacter == nullptr || !PlayerCharacter->IsAlive()) return;
 
 	FRotator CharacterRotation = PlayerCharacter->GetControlRotation();
 
@@ -90,7 +90,7 @@ void AZombieGame_PlayerController::Look(const FInputActionValue& Value)
 
 void AZombieGame_PlayerController::AimStart(const FInputActionValue& Value)
 {
-	if (PlayerCharacter == nullptr) return;
+	if (PlayerCharacter == nullptr || !PlayerCharacter->IsAlive()) return;
 	PlayerCharacter->StartAiming();
 }
 
@@ -102,7 +102,7 @@ void AZombieGame_PlayerController::AimEnd(const FInputActionValue& Value)
 
 void AZombieGame_PlayerController::PullTrigger(const FInputActionValue& Value)
 {
-	if (PlayerCharacter == nullptr) return;
+	if (PlayerCharacter == nullptr || !PlayerCharacter->IsAlive()) return;
 
 	if (PlayerCharacter->IsAiming())
 	{
@@ -122,7 +122,7 @@ void AZombieGame_PlayerController::ReleaseTrigger(const FInputActionValue& Value
 
 void AZombieGame_PlayerController::WeaponSelect(const FInputActionValue& Value)
 {
-	if (PlayerCharacter == nullptr) return;
+	if (PlayerCharacter == nullptr || !PlayerCharacter->IsAlive()) return;
 	PlayerCharacter->WeaponManagerComponent->EquipWeapon();
 }
 
@@ -142,12 +142,12 @@ void AZombieGame_PlayerController::PauseGame(const FInputActionValue& Value)
 
 void AZombieGame_PlayerController::Interact(const FInputActionValue& Value)
 {
-	if (PlayerCharacter == nullptr) return;
+	if (PlayerCharacter == nullptr || !PlayerCharacter->IsAlive()) return;
 	PlayerCharacter->PlayerInteraction->Interact();
 }
 
 void AZombieGame_PlayerController::Reload(const FInputActionValue& Value)
 {
-	if (PlayerCharacter == nullptr) return;
+	if (PlayerCharacter == nullptr || !PlayerCharacter->IsAlive()) return;
 	PlayerCharacter->WeaponManagerComponent->ReloadCurrentWeapon();
 }

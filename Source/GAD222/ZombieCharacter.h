@@ -64,6 +64,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	class UZombieHealth* ZombieHealth;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool bIsAlive{ true };
+
 	UFUNCTION()
 	void AttackComplete();
 
@@ -72,6 +75,18 @@ protected:
 
 	UFUNCTION()
 	virtual void OnOverlapRightHandBegin(class UPrimitiveComponent* newComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float HandAttackPower{ 60.0f };
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	UAnimMontage* DeathMontage;
+
+	UFUNCTION()
+	void DeathComplete();
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	class UNiagaraComponent* BurningFire;
 
 public:	
 	// Called every frame
@@ -133,4 +148,19 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void Attack();
+
+	UFUNCTION(BlueprintPure)
+	bool IsAlive() { return bIsAlive; }
+
+	UFUNCTION(BlueprintCallable)
+	void Death();
+
+	UFUNCTION(BlueprintCallable)
+	void InflictDamage(float Amount, USkeletalMeshComponent* BodyPart = nullptr);
+
+	UFUNCTION(BlueprintCallable)
+	TEnumAsByte<EBodyPart> BodyPartFromMesh(USkeletalMeshComponent* BodyPart);
+
+	UFUNCTION(BlueprintCallable)
+	void StartBurning();
 };
