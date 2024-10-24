@@ -11,6 +11,7 @@
 #include "WeaponManagerComponent.h"
 #include "NiagaraComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AWeapon::AWeapon()
@@ -88,13 +89,14 @@ void AWeapon::Fire()
 
 		if (Zombie != nullptr && HitSkeletalMeshComponent != nullptr)
 		{
-			Zombie->BodyPartHit(HitSkeletalMeshComponent);
-
+			Zombie->InflictDamage(Damage, HitSkeletalMeshComponent);
 			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), ImpactFlesh, HitResult.Location, ImapctRotation);
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), ImpactFleshAudio, HitResult.Location);
 		}
 		else
 		{
 			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), Impact, HitResult.Location, ImapctRotation);
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), ImpactAudio, HitResult.Location);
 		}
 		
 		//UE_LOG(LogTemp, Warning, TEXT("Hit %s"), *HitResult.GetComponent()->GetName());

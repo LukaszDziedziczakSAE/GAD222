@@ -49,6 +49,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	class UInputAction* IA_Reload;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	class UInputAction* IA_Run;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool bGamePaused;
 
@@ -81,6 +84,12 @@ protected:
 
 	UFUNCTION()
 	void Reload(const FInputActionValue& Value);
+
+	UFUNCTION()
+	void StartRunning(const FInputActionValue& Value);
+
+	UFUNCTION()
+	void StopRunning(const FInputActionValue& Value);
 
 public:
 

@@ -29,4 +29,7 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent)
 	void GameUnpaused();
+
+	UFUNCTION(BlueprintNativeEvent)
+	void LevelEnd();
 };

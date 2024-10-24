@@ -10,6 +10,7 @@
 #include "ZombieAIController.h"
 #include "Components/CapsuleComponent.h"
 #include "NiagaraComponent.h"
+#include "Components/AudioComponent.h"
 
 // Sets default values
 AZombieCharacter::AZombieCharacter()
@@ -59,6 +60,10 @@ AZombieCharacter::AZombieCharacter()
 	BurningFire->SetupAttachment(GetRootComponent());
 	BurningFire->SetRelativeLocation(FVector{0,0,-84.0f});
 	BurningFire->bAutoActivate = false;
+
+	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio Component"));
+	AudioComponent->SetupAttachment(GetRootComponent());
+	AudioComponent->SetRelativeLocation(FVector{0,0,60});
 }
 
 // Called when the game starts or when spawned
@@ -124,7 +129,7 @@ void AZombieCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 }
 
-void AZombieCharacter::DetachBodyPart(USkeletalMeshComponent* BodyPart)
+void AZombieCharacter::DetachMesh(USkeletalMeshComponent* BodyPart)
 {
 	if (BodyPart == Head)
 	{
@@ -136,18 +141,37 @@ void AZombieCharacter::DetachBodyPart(USkeletalMeshComponent* BodyPart)
 	BodyPart->Stop();
 	BodyPart->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
 	BodyPart->SetSimulatePhysics(true);
-
-	
 }
 
-void AZombieCharacter::BodyPartHit(USkeletalMeshComponent* BodyPart)
+void AZombieCharacter::DetachBodyPart(TEnumAsByte<EBodyPart> BodyPart)
 {
-	if (BodyPart->GetName() == GetMesh()->GetName()) return;
+	switch (BodyPart)
+	{
+	case EBodyPart::Head:
+		DetachMesh(Head);
+		bHasHead = false;
+		break;
 
-	DetachBodyPart(BodyPart);
+	case EBodyPart::LeftArm:
+		DetachMesh(LeftArm);
+		bHasLeftArm = false;
+		break;
 
-	if (BodyPart == LeftLeg) bHasLeftLeg = false;
-	else if (BodyPart == RightLeg) bHasRightLeg = false;
+	case EBodyPart::RightArm:
+		DetachMesh(RightArm);
+		bHasRightArm = false;
+		break;
+
+	case EBodyPart::Leftleg:
+		DetachMesh(LeftLeg);
+		bHasLeftLeg = false;
+		break;
+
+	case EBodyPart::RightLeg:
+		DetachMesh(RightLeg);
+		bHasRightLeg = false;
+		break;
+	}
 }
 
 TEnumAsByte<EZombieLocomotion> AZombieCharacter::GetZombieLocomotion()
@@ -209,9 +233,12 @@ void AZombieCharacter::InflictDamage(float Amount, USkeletalMeshComponent* BodyP
 
 TEnumAsByte<EBodyPart> AZombieCharacter::BodyPartFromMesh(USkeletalMeshComponent* BodyPart)
 {
-	if (BodyPart == nullptr) return EBodyPart::Torso;
-
-	return TEnumAsByte<EBodyPart>();
+	if (BodyPart == Head) return EBodyPart::Head;
+	else if (BodyPart == LeftArm) return EBodyPart::LeftArm;
+	else if (BodyPart == RightArm) return EBodyPart::RightArm;
+	else if (BodyPart == LeftLeg) return EBodyPart::Leftleg;
+	else if (BodyPart == RightLeg) return EBodyPart::RightLeg;
+	else return EBodyPart::Torso;
 }
 
 void AZombieCharacter::StartBurning()

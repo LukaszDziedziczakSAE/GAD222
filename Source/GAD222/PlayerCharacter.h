@@ -50,6 +50,24 @@ protected:
 	UFUNCTION()
 	void DeathComplete();
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float WalkingSpeed{ 200.0f };
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float JoggingSpeed{ 400.0f };
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float ArmedWalkingSpeed{ 200.0f };
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float ArmedJoggingSpeed{ 400.0f };
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float AimWalkingSpeed{ 150.0f };
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool bIsRunning;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -98,4 +116,16 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void InflictDamage(float Amount);
+
+	UFUNCTION(BlueprintAuthorityOnly)
+	void SetMovementSpeed();
+
+	UFUNCTION(BlueprintCallable)
+	void StartRunning();
+
+	UFUNCTION(BlueprintCallable)
+	void StopRunning();
+
+	UFUNCTION(BlueprintCallable)
+	FVector2D AimOffset();
 };

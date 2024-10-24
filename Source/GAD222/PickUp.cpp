@@ -6,7 +6,7 @@
 #include "WeaponManagerComponent.h"
 #include "PlayerInteraction.h"
 #include "Components/SphereComponent.h"
-#include "Components/AudioComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 APickUp::APickUp()
@@ -20,10 +20,6 @@ APickUp::APickUp()
 	CollisionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Collision Sphere"));
 	CollisionSphere->SetupAttachment(Mesh);
 	CollisionSphere->OnComponentBeginOverlap.AddDynamic(this, &APickUp::OnOverlapBegin);
-
-	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio Component"));
-	AudioComponent->SetupAttachment(Mesh);
-	AudioComponent->bAutoActivate = false;
 }
 
 // Called when the game starts or when spawned
@@ -51,6 +47,8 @@ void APickUp::Tick(float DeltaTime)
 
 void APickUp::PickUp(APlayerCharacter* PlayerCharacter)
 {
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), PickUpAudio, GetActorLocation());
+
 	switch (PickUpType)
 	{
 	case PistolPickup:

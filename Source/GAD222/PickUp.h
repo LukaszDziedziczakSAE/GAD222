@@ -44,8 +44,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int Amount;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	class UAudioComponent* AudioComponent;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	class USoundBase* PickUpAudio;
 
 	UFUNCTION()
 	virtual void OnOverlapBegin(class UPrimitiveComponent* newComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

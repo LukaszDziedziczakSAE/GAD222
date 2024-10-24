@@ -5,6 +5,7 @@
 #include "Components/SphereComponent.h"
 #include "PlayerCharacter.h"
 #include "PlayerInteraction.h"
+#include "Components/AudioComponent.h"
 
 // Sets default values
 AInteractable::AInteractable()
@@ -19,6 +20,10 @@ AInteractable::AInteractable()
 	CollisionSphere->SetupAttachment(Mesh);
 	CollisionSphere->OnComponentBeginOverlap.AddDynamic(this, &AInteractable::OnOverlapBegin);
 	CollisionSphere->OnComponentEndOverlap.AddDynamic(this, &AInteractable::OnOverlapEnd);
+
+	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio Component"));
+	AudioComponent->SetupAttachment(Mesh);
+	AudioComponent->bAutoActivate = false;
 }
 
 // Called when the game starts or when spawned
@@ -55,7 +60,7 @@ void AInteractable::Tick(float DeltaTime)
 
 void AInteractable::Interact(APlayerCharacter* PlayerCharacter)
 {
-
+	AudioComponent->Play();
 }
 
 bool AInteractable::CanInteract(APlayerCharacter* PlayerCharacter)

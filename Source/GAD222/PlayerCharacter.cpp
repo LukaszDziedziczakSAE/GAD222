@@ -10,6 +10,8 @@
 #include "GameFramework/PlayerController.h"
 #include "ZombieStoryHUD.h"
 #include "PlayerHealth.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -35,6 +37,8 @@ void APlayerCharacter::BeginPlay()
 	
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 	if (PlayerController != nullptr) HUD = Cast<AZombieStoryHUD>(PlayerController->GetHUD());
+
+	SetMovementSpeed();
 }
 
 void APlayerCharacter::DeathComplete()
@@ -70,6 +74,7 @@ void APlayerCharacter::StartAiming()
 	SpringArm->TargetArmLength = 75.0f;
 	bUseControllerRotationYaw = true;
 	GetCharacterMovement()->bOrientRotationToMovement = false;
+	SetMovementSpeed();
 	OnAimStart.Broadcast();
 }
 
@@ -80,6 +85,7 @@ void APlayerCharacter::StopAiming()
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	bIsAiming = false;
+	SetMovementSpeed();
 	OnAimStop.Broadcast();
 }
 
@@ -138,4 +144,65 @@ void APlayerCharacter::Death()
 void APlayerCharacter::InflictDamage(float Amount)
 {
 	PlayerHealth->TakeHealth(Amount);
+}
+
+void APlayerCharacter::SetMovementSpeed()
+{
+	if (bIsAiming)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = AimWalkingSpeed;
+	}
+	else if (WeaponManagerComponent->CurrentWeapon != nullptr)
+	{
+		if (bIsRunning) GetCharacterMovement()->MaxWalkSpeed = ArmedJoggingSpeed;
+		else GetCharacterMovement()->MaxWalkSpeed = ArmedWalkingSpeed;
+	}
+	else
+	{
+		if (bIsRunning) GetCharacterMovement()->MaxWalkSpeed = JoggingSpeed;
+		else GetCharacterMovement()->MaxWalkSpeed = WalkingSpeed;
+	}
+}
+
+void APlayerCharacter::StartRunning()
+{
+	bIsRunning = true;
+	SetMovementSpeed();
+}
+
+void APlayerCharacter::StopRunning()
+{
+	bIsRunning = false;
+	SetMovementSpeed();
+}
+
+FVector2D APlayerCharacter::AimOffset()
+{
+	FCollisionQueryParams TraceParams = FCollisionQueryParams(FName(TEXT("RV_Trace")), true, this);
+	TraceParams.bTraceComplex = true;
+	TraceParams.bReturnPhysicalMaterial = true;
+	TraceParams.bTraceIntoSubComponents = true;
+
+	//Re-initialize hit info
+	FHitResult HitResult(ForceInit);
+
+	APlayerCameraManager* PlayerCameraManager = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
+	FVector Start = PlayerCameraManager->GetCameraLocation();
+	FVector End = Start + (PlayerCameraManager->GetActorForwardVector() * 10000);
+
+	//call GetWorld() from within an actor extending class
+	if (GetWorld()->LineTraceSingleByChannel(
+		HitResult,		//result
+		Start,	//start
+		End, //end
+		ECC_GameTraceChannel1, //collision channel (ECC_GameTraceChannel1)
+		TraceParams
+	))
+	{
+		FVector CharacterPoint = GetActorLocation() + FVector{0,0,150};
+		FRotator ImapctRotation = UKismetMathLibrary::FindLookAtRotation(CharacterPoint, HitResult.ImpactPoint);
+
+		return FVector2D{ ImapctRotation.Pitch, ImapctRotation.Yaw };
+	}
+	return FVector2D();
 }

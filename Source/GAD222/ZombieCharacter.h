@@ -88,6 +88,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	class UNiagaraComponent* BurningFire;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	class UAudioComponent* AudioComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	class USoundBase* ZombieIdleAudio;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -120,13 +126,22 @@ public:
 	USkeletalMeshComponent* Hair;
 
 	UFUNCTION(BlueprintCallable)
-	void DetachBodyPart(USkeletalMeshComponent* BodyPart);
+	void DetachMesh(USkeletalMeshComponent* BodyPart);
 
 	UFUNCTION(BlueprintCallable)
-	void BodyPartHit(USkeletalMeshComponent* BodyPart);
+	void DetachBodyPart(TEnumAsByte<EBodyPart> BodyPart);
 
 	UFUNCTION(BlueprintPure)
 	TEnumAsByte<EZombieLocomotion> GetZombieLocomotion();
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool bHasHead{ true };
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool bHasLeftArm{ true };
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool bHasRightArm{ true };
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	bool bHasLeftLeg{ true };

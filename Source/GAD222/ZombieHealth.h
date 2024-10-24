@@ -40,7 +40,7 @@ protected:
 	float RightLegHealth;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	float MaxArmHealth{ 20.0f };
+	float MaxArmHealth{ 30.0f };
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	float LeftArmHealth;

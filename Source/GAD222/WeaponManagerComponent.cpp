@@ -53,6 +53,8 @@ void UWeaponManagerComponent::EquipWeapon()
 		UE_LOG(LogTemp, Warning, TEXT("Despawning Weapon"));
 		DespawnWeapon();
 	}
+
+	PlayerCharacter->SetMovementSpeed();
 }
 
 void UWeaponManagerComponent::UnequipWeapon()

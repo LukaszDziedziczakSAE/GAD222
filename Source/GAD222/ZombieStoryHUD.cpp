@@ -24,3 +24,7 @@ void AZombieStoryHUD::GameUnpaused_Implementation()
 {
 
 }
+
+void AZombieStoryHUD::LevelEnd_Implementation()
+{
+}

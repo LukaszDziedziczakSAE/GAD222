@@ -59,6 +59,15 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	class UNiagaraComponent* MuzzleFlash;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float Damage{ 10.0f };
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	class USoundBase* ImpactAudio;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	class USoundBase* ImpactFleshAudio;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

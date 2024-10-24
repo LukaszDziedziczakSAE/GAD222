@@ -57,6 +57,8 @@ void AZombieGame_PlayerController::SetupInputComponent()
 		Input->BindAction(IA_WeaponSelect, ETriggerEvent::Completed, this, &AZombieGame_PlayerController::WeaponSelect);
 		Input->BindAction(IA_Pause, ETriggerEvent::Triggered, this, &AZombieGame_PlayerController::PauseGame);
 		Input->BindAction(IA_Reload, ETriggerEvent::Triggered, this, &AZombieGame_PlayerController::Reload);
+		Input->BindAction(IA_Run, ETriggerEvent::Started, this, &AZombieGame_PlayerController::StartRunning);
+		Input->BindAction(IA_Run, ETriggerEvent::Completed, this, &AZombieGame_PlayerController::StopRunning);
 	}
 
 	else
@@ -150,4 +152,16 @@ void AZombieGame_PlayerController::Reload(const FInputActionValue& Value)
 {
 	if (PlayerCharacter == nullptr || !PlayerCharacter->IsAlive()) return;
 	PlayerCharacter->WeaponManagerComponent->ReloadCurrentWeapon();
+}
+
+void AZombieGame_PlayerController::StartRunning(const FInputActionValue& Value)
+{
+	if (PlayerCharacter == nullptr || !PlayerCharacter->IsAlive()) return;
+	PlayerCharacter->StartRunning();
+}
+
+void AZombieGame_PlayerController::StopRunning(const FInputActionValue& Value)
+{
+	if (PlayerCharacter == nullptr) return;
+	PlayerCharacter->StopRunning();
 }
