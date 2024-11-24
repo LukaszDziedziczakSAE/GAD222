@@ -224,6 +224,8 @@ void AZombieCharacter::Death()
 	GetWorld()->GetTimerManager().SetTimer(AttackTimerHandle, this, &AZombieCharacter::DeathComplete, t, false);*/
 
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
+
+	ZombieDeathEvent.Broadcast();
 }
 
 void AZombieCharacter::InflictDamage(float Amount, USkeletalMeshComponent* BodyPart)

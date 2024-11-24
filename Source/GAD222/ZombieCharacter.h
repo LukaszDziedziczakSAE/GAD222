@@ -8,6 +8,8 @@
 #include "EZombieBehaviour.h"
 #include "ZombieCharacter.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FZombieDeathDelegate);
+
 
 UENUM(BlueprintType)
 enum EZombieLocomotion
@@ -178,4 +180,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void StartBurning();
+
+	UPROPERTY(BlueprintAssignable)
+	FZombieDeathDelegate ZombieDeathEvent;
 };

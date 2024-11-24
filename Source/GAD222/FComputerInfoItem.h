@@ -22,4 +22,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class ADoor* Door;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class AMusicTrigger* MusicTrigger;
 };
