@@ -69,4 +69,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void ReloadCurrentWeapon();
+
+	UFUNCTION(BlueprintCallable)
+	void Save();
 };

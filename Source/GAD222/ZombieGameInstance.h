@@ -13,5 +13,30 @@ UCLASS()
 class GAD222_API UZombieGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	int Checkpoint{ 0 };
+
+	UFUNCTION()
+	void AddPickup(FString Name);
+
+	UFUNCTION(BlueprintCallable)
+	void PlayerCharacterStart(class APlayerCharacter* PlayerCharacter);
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	int KeycardLevel;
+
+	UFUNCTION(BlueprintCallable)
+	void Reset();
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	int PistolAmmo;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	int PistolAmmoStorage;
 	
+protected:
+	UPROPERTY()
+	TArray<FString> Pickups;
 };

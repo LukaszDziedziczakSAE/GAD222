@@ -9,6 +9,7 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAimStartDelegate);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAimStopDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlayerDeath);
 
 UCLASS()
 class GAD222_API APlayerCharacter : public ACharacter
@@ -46,9 +47,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	UAnimMontage* DeathMontage;
-
-	UFUNCTION()
-	void DeathComplete();
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float WalkingSpeed{ 200.0f };
@@ -128,4 +126,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	FVector2D AimOffset();
+
+	UPROPERTY(BlueprintAssignable)
+	FPlayerDeath PlayerDeathEvent;
+
+	UFUNCTION(BlueprintPure)
+	class UZombieGameInstance* GetGameInstance();
 };

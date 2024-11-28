@@ -15,7 +15,7 @@ public:
 	FText Label;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FText TextData;
+	TArray<FText> TextData;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UMediaSource* Media;
@@ -25,4 +25,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class AMusicTrigger* MusicTrigger;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Checkpoint{ -1 };
 };

@@ -60,6 +60,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool bIsAttacking;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool bRunning;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float AttackRate{ 1.0f };
 
@@ -95,6 +98,13 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	class USoundBase* ZombieIdleAudio;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	class USoundBase* ZombieAttackingAudio;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	class USoundBase* ZombiePainAudio;
+
 
 public:	
 	// Called every frame
@@ -180,6 +190,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void StartBurning();
+
+	UFUNCTION(BlueprintCallable)
+	void StartRunning();
 
 	UPROPERTY(BlueprintAssignable)
 	FZombieDeathDelegate ZombieDeathEvent;

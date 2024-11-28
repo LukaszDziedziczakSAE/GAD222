@@ -120,6 +120,12 @@ void AZombieCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (IsAlive() && !AudioComponent->IsPlaying())
+	{
+		AudioComponent->Sound = ZombieIdleAudio;
+		AudioComponent->Play();
+	}
+
 }
 
 // Called to bind functionality to input
@@ -172,6 +178,14 @@ void AZombieCharacter::DetachBodyPart(TEnumAsByte<EBodyPart> BodyPart)
 		bHasRightLeg = false;
 		break;
 	}
+	SetMovementSpeed();
+
+	if (ZombiePainAudio != nullptr)
+	{
+		AudioComponent->Stop();
+		AudioComponent->Sound = ZombiePainAudio;
+		AudioComponent->Play();
+	}
 }
 
 TEnumAsByte<EZombieLocomotion> AZombieCharacter::GetZombieLocomotion()
@@ -184,7 +198,7 @@ TEnumAsByte<EZombieLocomotion> AZombieCharacter::GetZombieLocomotion()
 
 void AZombieCharacter::SetMovementSpeed()
 {
-	if (bHasLeftLeg && bHasRightLeg) GetCharacterMovement()->MaxWalkSpeed = WalkingSpeed;
+	if (bHasLeftLeg && bHasRightLeg) GetCharacterMovement()->MaxWalkSpeed = bRunning ? RunningSpeed : WalkingSpeed;
 	else if (bHasLeftLeg) GetCharacterMovement()->MaxWalkSpeed = OneLegWalkingSpeed;
 	else if (bHasRightLeg) GetCharacterMovement()->MaxWalkSpeed = OneLegWalkingSpeed;
 	else GetCharacterMovement()->MaxWalkSpeed = CrawlingSpeed;
@@ -209,6 +223,12 @@ void AZombieCharacter::Attack()
 	FTimerHandle AttackTimerHandle;
 	GetWorld()->GetTimerManager().SetTimer(AttackTimerHandle, this, &AZombieCharacter::AttackComplete, t, false);
 
+	if (ZombieAttackingAudio != nullptr)
+	{
+		AudioComponent->Stop();
+		AudioComponent->Sound = ZombieAttackingAudio;
+		AudioComponent->Play();
+	}
 }
 
 void AZombieCharacter::Death()
@@ -248,5 +268,17 @@ void AZombieCharacter::StartBurning()
 	if (BurningFire->IsActive()) return;
 
 	BurningFire->Activate();
+	if (ZombiePainAudio != nullptr)
+	{
+		AudioComponent->Stop();
+		AudioComponent->Sound = ZombiePainAudio;
+		AudioComponent->Play();
+	}
+}
+
+void AZombieCharacter::StartRunning()
+{
+	bRunning = true;
+	SetMovementSpeed();
 }
 

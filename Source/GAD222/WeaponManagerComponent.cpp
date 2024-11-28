@@ -4,6 +4,7 @@
 #include "WeaponManagerComponent.h"
 #include "Weapon.h"
 #include "PlayerCharacter.h"
+#include "ZombieGameInstance.h"
 
 // Sets default values for this component's properties
 UWeaponManagerComponent::UWeaponManagerComponent()
@@ -45,12 +46,12 @@ void UWeaponManagerComponent::EquipWeapon()
 
 	if (CurrentWeapon == nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Spawning Weapon"));
+		UE_LOG(LogTemp, Warning, TEXT("Equiping Weapon"));
 		SpawnWeapon();
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Despawning Weapon"));
+		UE_LOG(LogTemp, Warning, TEXT("Unequiping Weapon"));
 		DespawnWeapon();
 	}
 
@@ -109,5 +110,15 @@ void UWeaponManagerComponent::ReloadCurrentWeapon()
 	bIsReloading = true;
 	FTimerHandle AttackTimerHandle;
 	GetWorld()->GetTimerManager().SetTimer(AttackTimerHandle, this, &UWeaponManagerComponent::ReloadAnimationComplete, t, false);
+}
+
+void UWeaponManagerComponent::Save()
+{
+	UZombieGameInstance* GameInstance = Cast<UZombieGameInstance>(GetWorld()->GetGameInstance());
+	if (GameInstance != nullptr)
+	{
+		GameInstance->PistolAmmo = PistolAmmo;
+		GameInstance->PistolAmmoStorage = PistolAmmoStorage;
+	}
 }
 

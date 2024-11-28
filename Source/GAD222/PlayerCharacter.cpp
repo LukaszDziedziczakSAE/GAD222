@@ -12,6 +12,7 @@
 #include "PlayerHealth.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
+#include "ZombieGameInstance.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -39,16 +40,9 @@ void APlayerCharacter::BeginPlay()
 	if (PlayerController != nullptr) HUD = Cast<AZombieStoryHUD>(PlayerController->GetHUD());
 
 	SetMovementSpeed();
-}
 
-void APlayerCharacter::DeathComplete()
-{
-	GetMesh()->Stop();
-
-	GetMesh()->SetAllBodiesSimulatePhysics(true);
-	GetMesh()->SetSimulatePhysics(true);
-	GetMesh()->WakeAllRigidBodies();
-	GetMesh()->SetCollisionProfileName(TEXT("Pawn"));
+	UZombieGameInstance* GameInstance = Cast<UZombieGameInstance>(GetWorld()->GetGameInstance());
+	if (GameInstance != nullptr) GameInstance->PlayerCharacterStart(this);
 }
 
 // Called every frame
@@ -133,12 +127,16 @@ void APlayerCharacter::Death()
 {
 	bIsAlive = false;
 
-	/*float t = PlayAnimMontage(DeathMontage, 2);
-	t -= 0.5f;
-	FTimerHandle AttackTimerHandle;
-	GetWorld()->GetTimerManager().SetTimer(AttackTimerHandle, this, &APlayerCharacter::DeathComplete, t, false);*/
+	//GetMesh()->Stop();
 
-	DeathComplete();
+	GetMesh()->SetAllBodiesSimulatePhysics(true);
+	GetMesh()->SetSimulatePhysics(true);
+	GetMesh()->WakeAllRigidBodies();
+	GetMesh()->SetCollisionProfileName(TEXT("Pawn"));
+
+	WeaponManagerComponent->Save();
+
+	PlayerDeathEvent.Broadcast();
 }
 
 void APlayerCharacter::InflictDamage(float Amount)
@@ -205,4 +203,9 @@ FVector2D APlayerCharacter::AimOffset()
 		return FVector2D{ ImapctRotation.Pitch, ImapctRotation.Yaw };
 	}
 	return FVector2D();
+}
+
+UZombieGameInstance* APlayerCharacter::GetGameInstance()
+{
+	return Cast<UZombieGameInstance>(GetWorld()->GetGameInstance());
 }

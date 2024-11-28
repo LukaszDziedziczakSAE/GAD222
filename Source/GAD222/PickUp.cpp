@@ -7,6 +7,7 @@
 #include "PlayerInteraction.h"
 #include "Components/SphereComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "ZombieGameInstance.h"
 
 // Sets default values
 APickUp::APickUp()
@@ -35,6 +36,7 @@ void APickUp::OnOverlapBegin(UPrimitiveComponent* newComp, AActor* OtherActor, U
 	if (PlayerCharacter != nullptr)
 	{
 		PickUp(PlayerCharacter);
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), PickUpAudio, GetActorLocation());
 	}
 }
 
@@ -47,8 +49,6 @@ void APickUp::Tick(float DeltaTime)
 
 void APickUp::PickUp(APlayerCharacter* PlayerCharacter)
 {
-	UGameplayStatics::PlaySoundAtLocation(GetWorld(), PickUpAudio, GetActorLocation());
-
 	switch (PickUpType)
 	{
 	case PistolPickup:
@@ -65,6 +65,10 @@ void APickUp::PickUp(APlayerCharacter* PlayerCharacter)
 	case Keycard1Pickup:
 		PickupKeycard(PlayerCharacter, 1);
 	}
+	
+	UZombieGameInstance* GameInstance = Cast<UZombieGameInstance>(GetWorld()->GetGameInstance());
+	if (GameInstance != nullptr) GameInstance->AddPickup(GetName());
+	Destroy();
 }
 
 void APickUp::PickupPistol(APlayerCharacter* PlayerCharacter)
@@ -73,14 +77,14 @@ void APickUp::PickupPistol(APlayerCharacter* PlayerCharacter)
 
 	PlayerCharacter->WeaponManagerComponent->HasPistol = true;
 
-	Destroy();
+	//Destroy();
 }
 
 void APickUp::PickupPistolAmmo(APlayerCharacter* PlayerCharacter)
 {
 	PlayerCharacter->WeaponManagerComponent->PistolAmmoStorage += Amount;
 
-	Destroy();
+	//Destroy();
 }
 
 void APickUp::PickupKeycard(APlayerCharacter* PlayerCharacter, int KeycardLevel)
@@ -90,6 +94,9 @@ void APickUp::PickupKeycard(APlayerCharacter* PlayerCharacter, int KeycardLevel)
 		PlayerCharacter->PlayerInteraction->KeycardLevel = KeycardLevel;
 	}
 
-	Destroy();
+	UZombieGameInstance* GameInstance = Cast<UZombieGameInstance>(GetWorld()->GetGameInstance());
+	if (GameInstance != nullptr && GameInstance->KeycardLevel < KeycardLevel) GameInstance->KeycardLevel = KeycardLevel;
+
+	//Destroy();
 }
 
