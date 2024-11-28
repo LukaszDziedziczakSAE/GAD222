@@ -19,7 +19,7 @@ protected:
 
 	virtual void OnPossess(APawn* aPawn) override;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class APlayerCharacter* PlayerCharacter;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)

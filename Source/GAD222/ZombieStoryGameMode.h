@@ -22,9 +22,11 @@ public:
 	TArray<class APlayerStart*> PlayerStarts;
 
 	UFUNCTION(BlueprintCallable)
-	void RestartLevel();
+	void ReloadGameLevel();
 
 	UFUNCTION(BlueprintCallable)
 	void RespawnCharacter();
 	
+	UFUNCTION(BlueprintCallable)
+	void ReloadMainMenu();
 };

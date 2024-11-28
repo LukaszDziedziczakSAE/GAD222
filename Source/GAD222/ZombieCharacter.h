@@ -100,11 +100,37 @@ protected:
 	class USoundBase* ZombieIdleAudio;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	class USoundBase* ZombieAttackingAudio;
+	USoundBase* ZombieAttackingAudio;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	class USoundBase* ZombiePainAudio;
+	USoundBase* ZombiePainAudio;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	USoundBase* ZombieEatingAudio;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool bZombieCQC{ false };
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool bZombieTakedown{ false };
+
+	UFUNCTION()
+	void EatingAttack(class APlayerCharacter* PlayerCharacter);
+
+	UFUNCTION()
+	void HandAttack();
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	APlayerCharacter* Player;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	float CQCTimer;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float CQCTimeTotal{ 3.0f };
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float CQCDistance{ 72.0f };
 
 public:	
 	// Called every frame
@@ -174,7 +200,7 @@ public:
 	void SetMovementSpeed();
 
 	UFUNCTION(BlueprintCallable)
-	void Attack();
+	void Attack(APlayerCharacter* PlayerCharacter);
 
 	UFUNCTION(BlueprintPure)
 	bool IsAlive() { return bIsAlive; }

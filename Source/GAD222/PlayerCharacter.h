@@ -45,6 +45,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool bIsAlive{ true };
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool bCanMove{ true };
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	UAnimMontage* DeathMontage;
 
@@ -65,6 +68,15 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool bIsRunning;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool bZombieCQC{ false };
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool bZombieTakedown{ false };
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	int CQCDefenceThreshhold{ 1 };
 
 public:	
 	// Called every frame
@@ -109,6 +121,15 @@ public:
 	UFUNCTION(BlueprintPure)
 	bool IsAlive() { return bIsAlive; }
 
+	UFUNCTION(BlueprintPure)
+	bool CanMove() { return bCanMove; }
+
+	UFUNCTION(BlueprintPure)
+	bool InZombieCQC() { return bZombieCQC; }
+
+	UFUNCTION(BlueprintPure)
+	bool CQCDefenceSucess(){ return CQCDefence >= CQCDefenceThreshhold; }
+
 	UFUNCTION(BlueprintCallable)
 	void Death();
 
@@ -132,4 +153,16 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	class UZombieGameInstance* GetGameInstance();
+
+	UFUNCTION(BlueprintCallable)
+	void ZombieCQCStart(FVector ZombiePosition);
+
+	UFUNCTION(BlueprintCallable)
+	void ZombieTakedown();
+
+	UFUNCTION(BlueprintCallable)
+	void ZombieCQCEnd();
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	int CQCDefence;
 };

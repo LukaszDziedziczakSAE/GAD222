@@ -115,15 +115,85 @@ void AZombieCharacter::DeathComplete()
 
 }
 
+void AZombieCharacter::EatingAttack(APlayerCharacter* PlayerCharacter)
+{
+	bZombieCQC = true;
+	CQCTimer = 0;
+	Player = PlayerCharacter;
+	PlayerCharacter->ZombieCQCStart(GetActorLocation());
+
+	FVector Direction = (PlayerCharacter->GetActorLocation() - GetActorLocation());
+	SetActorRotation((FRotationMatrix::MakeFromX(Direction).ToQuat()), ETeleportType::None);
+
+	FVector DirectionFromPlayer = (GetActorLocation() - PlayerCharacter->GetActorLocation()).GetSafeNormal();
+	FVector NewPosition = PlayerCharacter->GetActorLocation() + (DirectionFromPlayer * CQCDistance);
+	SetActorLocation(NewPosition);
+
+	if (ZombieEatingAudio != nullptr)
+	{
+		AudioComponent->Stop();
+		AudioComponent->Sound = ZombieEatingAudio;
+		AudioComponent->Play();
+	}
+
+}
+
+void AZombieCharacter::HandAttack()
+{
+	bool RandomBool = UKismetMathLibrary::RandomBool();
+	float t;
+	if (RandomBool)
+	{
+		t = PlayAnimMontage(LeftHandAttack, AttackRate);
+	}
+	else
+	{
+		t = PlayAnimMontage(RightHandAttack, AttackRate);
+	}
+	FTimerHandle AttackTimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(AttackTimerHandle, this, &AZombieCharacter::AttackComplete, t, false);
+
+	if (ZombieAttackingAudio != nullptr)
+	{
+		AudioComponent->Stop();
+		AudioComponent->Sound = ZombieAttackingAudio;
+		AudioComponent->Play();
+	}
+}
+
 // Called every frame
 void AZombieCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (IsAlive() && !AudioComponent->IsPlaying())
+	if (!IsAlive()) return;
+
+	if (!AudioComponent->IsPlaying())
 	{
 		AudioComponent->Sound = ZombieIdleAudio;
 		AudioComponent->Play();
+	}
+
+	if (bZombieCQC && !bZombieTakedown)
+	{
+		CQCTimer += DeltaTime;
+		if (CQCTimer >= CQCTimeTotal)
+		{
+			if (Player->CQCDefenceSucess())
+			{
+				bZombieCQC = false;
+				FTimerHandle AttackTimerHandle;
+				GetWorld()->GetTimerManager().SetTimer(AttackTimerHandle, this, &AZombieCharacter::AttackComplete, 1.5f, false);
+				AudioComponent->Stop();
+				Player->ZombieCQCEnd();
+				Player = nullptr;
+			}
+			else
+			{
+				bZombieTakedown = true;
+				Player->ZombieTakedown();
+			}
+		}
 	}
 
 }
@@ -204,31 +274,15 @@ void AZombieCharacter::SetMovementSpeed()
 	else GetCharacterMovement()->MaxWalkSpeed = CrawlingSpeed;
 }
 
-void AZombieCharacter::Attack()
+void AZombieCharacter::Attack(APlayerCharacter* PlayerCharacter)
 {
 	if (bIsAttacking) return;
 	UE_LOG(LogTemp, Warning, TEXT("%s attacking"), *GetName());
 	bIsAttacking = true;
 
-	bool RandomBool = UKismetMathLibrary::RandomBool();
-	float t;
-	if (RandomBool)
-	{
-		t = PlayAnimMontage(LeftHandAttack, AttackRate);
-	}
-	else
-	{
-		t = PlayAnimMontage(RightHandAttack, AttackRate);
-	}
-	FTimerHandle AttackTimerHandle;
-	GetWorld()->GetTimerManager().SetTimer(AttackTimerHandle, this, &AZombieCharacter::AttackComplete, t, false);
-
-	if (ZombieAttackingAudio != nullptr)
-	{
-		AudioComponent->Stop();
-		AudioComponent->Sound = ZombieAttackingAudio;
-		AudioComponent->Play();
-	}
+	
+	EatingAttack(PlayerCharacter);
+	
 }
 
 void AZombieCharacter::Death()

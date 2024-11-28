@@ -209,3 +209,25 @@ UZombieGameInstance* APlayerCharacter::GetGameInstance()
 {
 	return Cast<UZombieGameInstance>(GetWorld()->GetGameInstance());
 }
+
+void APlayerCharacter::ZombieCQCStart(FVector ZombiePosition)
+{
+	bZombieCQC = true;
+	bCanMove = false;
+	FVector Direction = (ZombiePosition - GetActorLocation());
+	SetActorRotation((FRotationMatrix::MakeFromX(Direction).ToQuat()), ETeleportType::None);
+	CQCDefence = 0;
+}
+
+void APlayerCharacter::ZombieTakedown()
+{
+	bZombieTakedown = true;
+	FTimerHandle TakeDownDeathHandle;
+	GetWorld()->GetTimerManager().SetTimer(TakeDownDeathHandle, this, &APlayerCharacter::Death, 2.0f, false);
+}
+
+void APlayerCharacter::ZombieCQCEnd()
+{
+	bZombieCQC = false;
+	bCanMove = true;
+}

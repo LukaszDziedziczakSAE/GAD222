@@ -69,7 +69,7 @@ void AZombieGame_PlayerController::SetupInputComponent()
 
 void AZombieGame_PlayerController::Move(const FInputActionValue& Value)
 {
-	if (PlayerCharacter == nullptr || !PlayerCharacter->IsAlive()) return;
+	if (PlayerCharacter == nullptr || !PlayerCharacter->IsAlive() || !PlayerCharacter->CanMove()) return;
 
 	FRotator CharacterRotation = PlayerCharacter->GetControlRotation();
 
@@ -92,7 +92,7 @@ void AZombieGame_PlayerController::Look(const FInputActionValue& Value)
 
 void AZombieGame_PlayerController::AimStart(const FInputActionValue& Value)
 {
-	if (PlayerCharacter == nullptr || !PlayerCharacter->IsAlive()) return;
+	if (PlayerCharacter == nullptr || !PlayerCharacter->IsAlive() || !PlayerCharacter->CanMove()) return;
 	PlayerCharacter->StartAiming();
 }
 
@@ -110,6 +110,11 @@ void AZombieGame_PlayerController::PullTrigger(const FInputActionValue& Value)
 	{
 		PlayerCharacter->WeaponManagerComponent->PullTrigger();
 	}
+
+	if (PlayerCharacter->InZombieCQC())
+	{
+		PlayerCharacter->CQCDefence++;
+	}
 }
 
 void AZombieGame_PlayerController::ReleaseTrigger(const FInputActionValue& Value)
@@ -124,7 +129,7 @@ void AZombieGame_PlayerController::ReleaseTrigger(const FInputActionValue& Value
 
 void AZombieGame_PlayerController::WeaponSelect(const FInputActionValue& Value)
 {
-	if (PlayerCharacter == nullptr || !PlayerCharacter->IsAlive()) return;
+	if (PlayerCharacter == nullptr || !PlayerCharacter->IsAlive() || !PlayerCharacter->CanMove()) return;
 	PlayerCharacter->WeaponManagerComponent->EquipWeapon();
 }
 
@@ -144,19 +149,19 @@ void AZombieGame_PlayerController::PauseGame(const FInputActionValue& Value)
 
 void AZombieGame_PlayerController::Interact(const FInputActionValue& Value)
 {
-	if (PlayerCharacter == nullptr || !PlayerCharacter->IsAlive()) return;
+	if (PlayerCharacter == nullptr || !PlayerCharacter->IsAlive() || !PlayerCharacter->CanMove()) return;
 	PlayerCharacter->PlayerInteraction->Interact();
 }
 
 void AZombieGame_PlayerController::Reload(const FInputActionValue& Value)
 {
-	if (PlayerCharacter == nullptr || !PlayerCharacter->IsAlive()) return;
+	if (PlayerCharacter == nullptr || !PlayerCharacter->IsAlive() || !PlayerCharacter->CanMove()) return;
 	PlayerCharacter->WeaponManagerComponent->ReloadCurrentWeapon();
 }
 
 void AZombieGame_PlayerController::StartRunning(const FInputActionValue& Value)
 {
-	if (PlayerCharacter == nullptr || !PlayerCharacter->IsAlive()) return;
+	if (PlayerCharacter == nullptr || !PlayerCharacter->IsAlive() || !PlayerCharacter->CanMove()) return;
 	PlayerCharacter->StartRunning();
 }
 
