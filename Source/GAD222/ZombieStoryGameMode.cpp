@@ -62,17 +62,21 @@ AActor* AZombieStoryGameMode::ChoosePlayerStart_Implementation(AController* Play
 	return PlayerStarts[0];
 }
 
-void AZombieStoryGameMode::ReloadGameLevel()
+void AZombieStoryGameMode::ReloadGameLevelFromCheckpoint()
 {
-	//FName MapName = FName{ GetWorld()->GetMapName() };
 	UGameplayStatics::OpenLevel(GetWorld(), TEXT("L_PineGap_Sublevel44"));
 }
 
-void AZombieStoryGameMode::RespawnCharacter()
+void AZombieStoryGameMode::ReloadGameLevel()
 {
+	UZombieGameInstance* GameInstance = Cast<UZombieGameInstance>(GetGameInstance());
+	if (GameInstance != nullptr) GameInstance->Reset();
+	UGameplayStatics::OpenLevel(GetWorld(), TEXT("L_PineGap_Sublevel44"));
 }
 
 void AZombieStoryGameMode::ReloadMainMenu()
 {
+	UZombieGameInstance* GameInstance = Cast<UZombieGameInstance>(GetGameInstance());
+	if (GameInstance != nullptr) GameInstance->Reset();
 	UGameplayStatics::OpenLevel(GetWorld(), TEXT("L_Coolroom"));
 }
