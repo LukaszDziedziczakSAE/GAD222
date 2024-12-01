@@ -30,6 +30,27 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UCameraComponent* Camera;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USkeletalMeshComponent* Top;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USkeletalMeshComponent* Bottom;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USkeletalMeshComponent* Shoes;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USkeletalMeshComponent* Hair;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USkeletalMeshComponent* Arms;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USkeletalMesh* BodyClothed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USkeletalMesh* BodyUnclothed;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool bIsAiming;
 
@@ -77,6 +98,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	int CQCDefenceThreshhold{ 1 };
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	bool bShowClothesOverride;
 
 public:	
 	// Called every frame
@@ -165,4 +189,7 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	int CQCDefence;
+
+	UFUNCTION(BlueprintCallable)
+	void Clothed(bool bIsClothed);
 };

@@ -44,7 +44,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int Amount;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class USoundBase* PickUpAudio;
 
 	UFUNCTION()
@@ -62,6 +62,9 @@ public:
 
 	UFUNCTION()
 	void PickupPistolAmmo(APlayerCharacter* PlayerCharacter);
+
+	UFUNCTION()
+	void PickupClothing(APlayerCharacter* PlayerCharacter);
 
 	UFUNCTION()
 	void PickupKeycard(APlayerCharacter* PlayerCharacter, int KeycardLevel);

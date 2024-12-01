@@ -15,8 +15,23 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<class APlayerCharacter> Maria;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<APlayerCharacter> Mike;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	class ULevelSequence* IntroLevelSequence;
+
+	UFUNCTION()
+	void IntroLevelSequenceComplete();
+
 public:
 	AActor* ChoosePlayerStart_Implementation(AController* Player) override;
+
+	/** Returns default pawn class for given controller */
+	UClass* GetDefaultPawnClassForController_Implementation(AController* InController) override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TArray<class APlayerStart*> PlayerStarts;

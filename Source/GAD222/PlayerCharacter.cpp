@@ -29,6 +29,26 @@ APlayerCharacter::APlayerCharacter()
 	WeaponManagerComponent = CreateDefaultSubobject<UWeaponManagerComponent>(TEXT("Weapon Manager Component"));
 	PlayerInteraction = CreateDefaultSubobject<UPlayerInteraction>(TEXT("Player Interaction"));
 	PlayerHealth = CreateDefaultSubobject<UPlayerHealth>(TEXT("Player Health"));
+
+	Top = CreateDefaultSubobject<USkeletalMeshComponent>("Top");
+	Top->SetupAttachment(GetMesh());
+	Top->SetLeaderPoseComponent(GetMesh());
+
+	Bottom = CreateDefaultSubobject<USkeletalMeshComponent>("Bottom");
+	Bottom->SetupAttachment(GetMesh());
+	Bottom->SetLeaderPoseComponent(GetMesh());
+
+	Shoes = CreateDefaultSubobject<USkeletalMeshComponent>("Shoes");
+	Shoes->SetupAttachment(GetMesh());
+	Shoes->SetLeaderPoseComponent(GetMesh());
+
+	Hair = CreateDefaultSubobject<USkeletalMeshComponent>("Hair");
+	Hair->SetupAttachment(GetMesh());
+	Hair->SetLeaderPoseComponent(GetMesh());
+
+	Arms = CreateDefaultSubobject<USkeletalMeshComponent>("Arms");
+	Arms->SetupAttachment(GetMesh());
+	Arms->SetLeaderPoseComponent(GetMesh());
 }
 
 // Called when the game starts or when spawned
@@ -230,4 +250,37 @@ void APlayerCharacter::ZombieCQCEnd()
 {
 	bZombieCQC = false;
 	bCanMove = true;
+}
+
+void APlayerCharacter::Clothed(bool bIsClothed)
+{
+	if (bShowClothesOverride)
+	{
+		GetMesh()->SetSkeletalMesh(BodyClothed);
+		Top->SetVisibility(true);
+		Bottom->SetVisibility(true);
+		Shoes->SetVisibility(true);
+		Arms->SetVisibility(true);
+		return;
+	}
+
+	if (bIsClothed)
+	{
+		GetMesh()->SetSkeletalMesh(BodyClothed);
+		Top->SetVisibility(true);
+		Bottom->SetVisibility(true);
+		Shoes->SetVisibility(true);
+		Arms->SetVisibility(true);
+	}
+	else
+	{
+		GetMesh()->SetSkeletalMesh(BodyUnclothed);
+		Top->SetVisibility(false);
+		Bottom->SetVisibility(false);
+		Shoes->SetVisibility(false);
+		Arms->SetVisibility(false);
+	}
+
+	UZombieGameInstance* GameInstance = Cast<UZombieGameInstance>(GetGameInstance());
+	if (GameInstance != nullptr) GameInstance->bHasClothesOn = bIsClothed;
 }

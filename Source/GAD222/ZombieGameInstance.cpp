@@ -37,6 +37,7 @@ void UZombieGameInstance::PlayerCharacterStart(APlayerCharacter* PlayerCharacter
 	PlayerCharacter->PlayerInteraction->KeycardLevel = KeycardLevel;
 	PlayerCharacter->WeaponManagerComponent->PistolAmmo = PistolAmmo;
 	PlayerCharacter->WeaponManagerComponent->PistolAmmoStorage = PistolAmmoStorage;
+	PlayerCharacter->Clothed(bHasClothesOn);
 }
 
 void UZombieGameInstance::Reset()
@@ -46,4 +47,5 @@ void UZombieGameInstance::Reset()
 	PistolAmmo = 0;
 	PistolAmmoStorage = 0;
 	Pickups.Empty();
+	bHasClothesOn = false;
 }

@@ -93,6 +93,6 @@ protected:
 
 public:
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void PauseGame(const FInputActionValue& Value);
 };

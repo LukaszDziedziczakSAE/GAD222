@@ -5,6 +5,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/PlayerStart.h"
 #include "ZombieGame_PlayerController.h"
+#include "PlayerCharacter.h"
 #include "ZombieGameInstance.h"
 
 void AZombieStoryGameMode::BeginPlay()
@@ -21,6 +22,18 @@ void AZombieStoryGameMode::BeginPlay()
 			if (PS == nullptr) continue;
 			PlayerStarts.Add(PS);
 		}
+	}
+}
+
+void AZombieStoryGameMode::IntroLevelSequenceComplete()
+{
+	AActor* Start = ChoosePlayerStart(GetWorld()->GetFirstPlayerController());
+	UZombieGameInstance* GameInstance = Cast<UZombieGameInstance>(GetGameInstance());
+	if (GameInstance != nullptr)
+	{
+		FActorSpawnParameters SpawnInfo;
+		APlayerCharacter* PlayerCharacter = GetWorld()->SpawnActor<APlayerCharacter>(GameInstance->bMaleCharacter ? Mike : Maria, Start->GetActorLocation(), Start->GetActorRotation(), SpawnInfo);
+		GetWorld()->GetFirstPlayerController()->Possess(PlayerCharacter);
 	}
 }
 
@@ -60,6 +73,25 @@ AActor* AZombieStoryGameMode::ChoosePlayerStart_Implementation(AController* Play
 	Super::ChoosePlayerStart_Implementation(Player);
 	UE_LOG(LogTemp, Error, TEXT("Did not find checkpoint PlayerStart"));
 	return PlayerStarts[0];
+}
+
+UClass* AZombieStoryGameMode::GetDefaultPawnClassForController_Implementation(AController* InController)
+{
+	UZombieGameInstance* GameInstance = Cast<UZombieGameInstance>(GetGameInstance());
+	if (GameInstance != nullptr)
+	{
+		if (GameInstance->bMaleCharacter)
+		{
+			return Mike;
+		}
+		else
+		{
+			return Maria;
+		}
+	}
+
+	// default implementation returns gamemode's DefaultPawnClass
+	return Super::GetDefaultPawnClassForController_Implementation(InController);;
 }
 
 void AZombieStoryGameMode::ReloadGameLevelFromCheckpoint()

@@ -60,6 +60,7 @@ void APickUp::PickUp(APlayerCharacter* PlayerCharacter)
 		break;
 
 	case ClothingPickup:
+		PickupClothing(PlayerCharacter);
 		break;
 
 	case Keycard1Pickup:
@@ -85,6 +86,12 @@ void APickUp::PickupPistolAmmo(APlayerCharacter* PlayerCharacter)
 	PlayerCharacter->WeaponManagerComponent->PistolAmmoStorage += Amount;
 
 	//Destroy();
+}
+
+void APickUp::PickupClothing(APlayerCharacter* PlayerCharacter)
+{
+	PlayerCharacter->Clothed(true);
+	PickupKeycard(PlayerCharacter, 1);
 }
 
 void APickUp::PickupKeycard(APlayerCharacter* PlayerCharacter, int KeycardLevel)

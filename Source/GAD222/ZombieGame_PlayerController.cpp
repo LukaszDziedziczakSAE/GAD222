@@ -55,7 +55,7 @@ void AZombieGame_PlayerController::SetupInputComponent()
 		Input->BindAction(IA_Fire, ETriggerEvent::Completed, this, &AZombieGame_PlayerController::ReleaseTrigger);
 		Input->BindAction(IA_Interact, ETriggerEvent::Triggered, this, &AZombieGame_PlayerController::Interact);
 		Input->BindAction(IA_WeaponSelect, ETriggerEvent::Completed, this, &AZombieGame_PlayerController::WeaponSelect);
-		Input->BindAction(IA_Pause, ETriggerEvent::Triggered, this, &AZombieGame_PlayerController::PauseGame);
+		Input->BindAction(IA_Pause, ETriggerEvent::Started, this, &AZombieGame_PlayerController::PauseGame);
 		Input->BindAction(IA_Reload, ETriggerEvent::Triggered, this, &AZombieGame_PlayerController::Reload);
 		Input->BindAction(IA_Run, ETriggerEvent::Started, this, &AZombieGame_PlayerController::StartRunning);
 		Input->BindAction(IA_Run, ETriggerEvent::Completed, this, &AZombieGame_PlayerController::StopRunning);
@@ -136,13 +136,18 @@ void AZombieGame_PlayerController::WeaponSelect(const FInputActionValue& Value)
 void AZombieGame_PlayerController::PauseGame(const FInputActionValue& Value)
 {
 	if (PlayerCharacter == nullptr) return;
+	
 
 	if (bGamePaused)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Unpause Game"));
+		bGamePaused = false;
 		Cast<AZombieStoryHUD>(GetHUD())->GameUnpaused();
 	}
 	else
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Pause Game"));
+		bGamePaused = true;
 		Cast<AZombieStoryHUD>(GetHUD())->GamePaused();
 	}
 }

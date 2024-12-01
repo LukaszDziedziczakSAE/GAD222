@@ -35,6 +35,12 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	int PistolAmmoStorage;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	bool bMaleCharacter;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	bool bHasClothesOn;
 	
 protected:
 	UPROPERTY()
