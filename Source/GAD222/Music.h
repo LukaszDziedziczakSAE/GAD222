@@ -43,14 +43,14 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float MinVolume{ 0.001f };
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float MaxVolume{ 1.0f };
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Fading")
 	float FadeCurrent;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Fading")
-	float FadeTime{ 2.0f };
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Fading")
+	float FadeTime{ 3.0f };
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Fading")
 	bool bFadeInPercussive;
@@ -87,6 +87,24 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Fading")
 	bool bFadeOutSquareWave;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Start")
+	bool bOnStartPercussive;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Start")
+	bool bOnStartAtmospheric;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Start")
+	bool bOnStartPiano;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Start")
+	bool bOnStartBongos;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Start")
+	bool bOnStartStrings;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Start")
+	bool bOnStartSquareWave;
 
 public:	
 	// Called every frame

@@ -5,6 +5,7 @@
 #include "Components/BoxComponent.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Components/AudioComponent.h"
+#include "ZombieGameInstance.h"
 
 // Sets default values
 ADoor::ADoor()
@@ -88,6 +89,15 @@ void ADoor::OpeningTick()
 		FVector DoorMeshPosition2 = FMath::Lerp(ClosedPosition2, OpenPosition2, Progress);
 		DoorMesh2->SetRelativeLocation(DoorMeshPosition2);
 	}
+
+	if (bSaveState && Progress == 1.0f)
+	{
+		UZombieGameInstance* GameInstance = Cast<UZombieGameInstance>(GetWorld()->GetGameInstance());
+		if (GameInstance != nullptr)
+		{
+			GameInstance->DoorState = DoorState;
+		}
+	}
 }
 
 void ADoor::ClosingTick()
@@ -116,6 +126,15 @@ void ADoor::ClosingTick()
 	{
 		FVector DoorMeshPosition2 = FMath::Lerp(OpenPosition2, ClosedPosition2, Progress);
 		DoorMesh2->SetRelativeLocation(DoorMeshPosition2);
+	}
+
+	if (bSaveState && Progress == 1.0f)
+	{
+		UZombieGameInstance* GameInstance = Cast<UZombieGameInstance>(GetWorld()->GetGameInstance());
+		if (GameInstance != nullptr)
+		{
+			GameInstance->DoorState = DoorState;
+		}
 	}
 }
 
@@ -178,5 +197,44 @@ void ADoor::CloseDoor()
 
 	AudioComponent->SetSound(ClosingSound);
 	AudioComponent->Play();
+}
+
+void ADoor::InitilizeDoor(TEnumAsByte<EDoorState> State)
+{
+	if (State == DoorOpen)
+	{
+		float Progress = 0;
+		DoorState = DoorOpen;
+
+		if (DoorMesh->GetStaticMesh() != nullptr)
+		{
+			FVector DoorMeshPosition = FMath::Lerp(OpenPosition, ClosedPosition, Progress);
+			DoorMesh->SetRelativeLocation(DoorMeshPosition);
+		}
+
+		if (DoorMesh2->GetStaticMesh() != nullptr)
+		{
+			FVector DoorMeshPosition2 = FMath::Lerp(OpenPosition2, ClosedPosition2, Progress);
+			DoorMesh2->SetRelativeLocation(DoorMeshPosition2);
+		}
+	}
+
+	else if (State == DoorClosed)
+	{
+		float Progress = 1;
+		DoorState = DoorClosed;
+
+		if (DoorMesh->GetStaticMesh() != nullptr)
+		{
+			FVector DoorMeshPosition = FMath::Lerp(OpenPosition, ClosedPosition, Progress);
+			DoorMesh->SetRelativeLocation(DoorMeshPosition);
+		}
+
+		if (DoorMesh2->GetStaticMesh() != nullptr)
+		{
+			FVector DoorMeshPosition2 = FMath::Lerp(OpenPosition2, ClosedPosition2, Progress);
+			DoorMesh2->SetRelativeLocation(DoorMeshPosition2);
+		}
+	}
 }
 

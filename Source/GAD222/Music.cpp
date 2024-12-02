@@ -46,7 +46,12 @@ void AMusic::BeginPlay()
 	Layer_Strings->AdjustVolume(0, MinVolume);
 	Layer_SquareWave->AdjustVolume(0, MinVolume);
 
-	FadeInPercussive();
+	if (bOnStartPercussive) FadeInPercussive();
+	if (bOnStartAtmospheric) FadeInAtmospheric();
+	if (bOnStartPiano) FadeInPiano();
+	if (bOnStartBongos) FadeInBongos();
+	if (bOnStartStrings) FadeInStrings();
+	if (bOnStartSquareWave) FadeInSquareWave();
 }
 
 // Called every frame

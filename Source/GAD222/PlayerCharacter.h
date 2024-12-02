@@ -10,6 +10,7 @@
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAimStartDelegate);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAimStopDelegate);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlayerDeath);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPlayerPickup, FString, PickupText);
 
 UCLASS()
 class GAD222_API APlayerCharacter : public ACharacter
@@ -192,4 +193,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void Clothed(bool bIsClothed);
+
+	UPROPERTY(BlueprintAssignable)
+	FPlayerPickup PlayerPickupEvent;
+
+	UFUNCTION(BlueprintCallable)
+	void PickedUpItemBroadcast(FString MessageText);
 };

@@ -284,3 +284,8 @@ void APlayerCharacter::Clothed(bool bIsClothed)
 	UZombieGameInstance* GameInstance = Cast<UZombieGameInstance>(GetGameInstance());
 	if (GameInstance != nullptr) GameInstance->bHasClothesOn = bIsClothed;
 }
+
+void APlayerCharacter::PickedUpItemBroadcast(FString MessageText)
+{
+	PlayerPickupEvent.Broadcast(MessageText);
+}

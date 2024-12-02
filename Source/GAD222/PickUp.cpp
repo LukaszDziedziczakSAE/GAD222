@@ -47,24 +47,24 @@ void APickUp::Tick(float DeltaTime)
 
 }
 
-void APickUp::PickUp(APlayerCharacter* PlayerCharacter)
+void APickUp::PickUp(APlayerCharacter* PlayerCharacter, bool bSkipBroadcast)
 {
 	switch (PickUpType)
 	{
 	case PistolPickup:
-		PickupPistol(PlayerCharacter);
+		PickupPistol(PlayerCharacter, bSkipBroadcast);
 		break;
 
 	case PistolAmmoPickup:
-		PickupPistolAmmo(PlayerCharacter);
+		PickupPistolAmmo(PlayerCharacter, bSkipBroadcast);
 		break;
 
 	case ClothingPickup:
-		PickupClothing(PlayerCharacter);
+		PickupClothing(PlayerCharacter, bSkipBroadcast);
 		break;
 
 	case Keycard1Pickup:
-		PickupKeycard(PlayerCharacter, 1);
+		PickupKeycard(PlayerCharacter, 1, bSkipBroadcast);
 	}
 	
 	UZombieGameInstance* GameInstance = Cast<UZombieGameInstance>(GetWorld()->GetGameInstance());
@@ -72,29 +72,29 @@ void APickUp::PickUp(APlayerCharacter* PlayerCharacter)
 	Destroy();
 }
 
-void APickUp::PickupPistol(APlayerCharacter* PlayerCharacter)
+void APickUp::PickupPistol(APlayerCharacter* PlayerCharacter, bool bSkipBroadcast)
 {
 	if (PlayerCharacter->WeaponManagerComponent->HasPistol) return;
 
 	PlayerCharacter->WeaponManagerComponent->HasPistol = true;
 
-	//Destroy();
+	if (!bSkipBroadcast) PlayerCharacter->PickedUpItemBroadcast("Pistol");
 }
 
-void APickUp::PickupPistolAmmo(APlayerCharacter* PlayerCharacter)
+void APickUp::PickupPistolAmmo(APlayerCharacter* PlayerCharacter, bool bSkipBroadcast)
 {
 	PlayerCharacter->WeaponManagerComponent->PistolAmmoStorage += Amount;
 
-	//Destroy();
+	if (!bSkipBroadcast) PlayerCharacter->PickedUpItemBroadcast(FString::FromInt(Amount) + " Pistol Ammo");
 }
 
-void APickUp::PickupClothing(APlayerCharacter* PlayerCharacter)
+void APickUp::PickupClothing(APlayerCharacter* PlayerCharacter, bool bSkipBroadcast)
 {
 	PlayerCharacter->Clothed(true);
-	PickupKeycard(PlayerCharacter, 1);
+	PickupKeycard(PlayerCharacter, 1, bSkipBroadcast);
 }
 
-void APickUp::PickupKeycard(APlayerCharacter* PlayerCharacter, int KeycardLevel)
+void APickUp::PickupKeycard(APlayerCharacter* PlayerCharacter, int KeycardLevel, bool bSkipBroadcast)
 {
 	if (PlayerCharacter->PlayerInteraction->KeycardLevel < KeycardLevel)
 	{
@@ -104,6 +104,6 @@ void APickUp::PickupKeycard(APlayerCharacter* PlayerCharacter, int KeycardLevel)
 	UZombieGameInstance* GameInstance = Cast<UZombieGameInstance>(GetWorld()->GetGameInstance());
 	if (GameInstance != nullptr && GameInstance->KeycardLevel < KeycardLevel) GameInstance->KeycardLevel = KeycardLevel;
 
-	//Destroy();
+	if (!bSkipBroadcast) PlayerCharacter->PickedUpItemBroadcast("Keycard Level 1");
 }
 

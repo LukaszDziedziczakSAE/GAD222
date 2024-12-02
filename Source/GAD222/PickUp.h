@@ -55,17 +55,17 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable)
-	virtual void PickUp(class APlayerCharacter* PlayerCharacter);
+	virtual void PickUp(class APlayerCharacter* PlayerCharacter, bool bSkipBroadcast = false);
 
 	UFUNCTION()
-	void PickupPistol(APlayerCharacter* PlayerCharacter);
+	void PickupPistol(APlayerCharacter* PlayerCharacter, bool bSkipBroadcast);
 
 	UFUNCTION()
-	void PickupPistolAmmo(APlayerCharacter* PlayerCharacter);
+	void PickupPistolAmmo(APlayerCharacter* PlayerCharacter, bool bSkipBroadcast);
 
 	UFUNCTION()
-	void PickupClothing(APlayerCharacter* PlayerCharacter);
+	void PickupClothing(APlayerCharacter* PlayerCharacter, bool bSkipBroadcast);
 
 	UFUNCTION()
-	void PickupKeycard(APlayerCharacter* PlayerCharacter, int KeycardLevel);
+	void PickupKeycard(APlayerCharacter* PlayerCharacter, int KeycardLevel, bool bSkipBroadcast);
 };

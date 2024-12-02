@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
+#include "Door.h"
 #include "ZombieGameInstance.generated.h"
 
 /**
@@ -41,6 +42,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	bool bHasClothesOn;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	TEnumAsByte<EDoorState> DoorState{ DoorClosed };
 	
 protected:
 	UPROPERTY()

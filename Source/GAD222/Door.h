@@ -98,6 +98,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	bool bIsLocked;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	bool bSaveState;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TEnumAsByte<EDoorState> DoorState;
 
@@ -106,4 +109,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void CloseDoor();
+
+	UFUNCTION(BlueprintCallable)
+	void InitilizeDoor(TEnumAsByte<EDoorState> State);
 };

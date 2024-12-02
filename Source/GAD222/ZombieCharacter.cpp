@@ -299,6 +299,21 @@ void AZombieCharacter::Death()
 
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
 
+	if (ZombiePainAudio != nullptr)
+	{
+		if (AudioComponent->IsPlaying() && AudioComponent->Sound != ZombiePainAudio)
+		{
+			AudioComponent->Stop();
+			AudioComponent->Sound = ZombiePainAudio;
+			AudioComponent->Play();
+		}
+		else if (!AudioComponent->IsPlaying())
+		{
+			AudioComponent->Sound = ZombiePainAudio;
+			AudioComponent->Play();
+		}
+	}
+
 	ZombieDeathEvent.Broadcast();
 }
 
