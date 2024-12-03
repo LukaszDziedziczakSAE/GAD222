@@ -135,7 +135,8 @@ void AZombieGame_PlayerController::Look(const FInputActionValue& Value)
 void AZombieGame_PlayerController::AimStart(const FInputActionValue& Value)
 {
 	if (bDisableControl) return;
-	if (PlayerCharacter == nullptr || !PlayerCharacter->IsAlive() || !PlayerCharacter->CanMove()) return;
+	if (PlayerCharacter == nullptr || !PlayerCharacter->IsAlive() || !PlayerCharacter->CanMove() || PlayerCharacter->WeaponManagerComponent->CurrentWeapon == nullptr) return;
+
 	PlayerCharacter->StartAiming();
 
 	if (!TutorialComponent->bHasAimed)
@@ -152,7 +153,7 @@ void AZombieGame_PlayerController::AimStart(const FInputActionValue& Value)
 
 void AZombieGame_PlayerController::AimEnd(const FInputActionValue& Value)
 {
-	if (PlayerCharacter == nullptr) return;
+	if (PlayerCharacter == nullptr || PlayerCharacter->WeaponManagerComponent->CurrentWeapon == nullptr) return;
 	PlayerCharacter->StopAiming();
 }
 

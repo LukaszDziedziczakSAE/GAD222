@@ -70,6 +70,10 @@ void APlayerCharacter::BeginPlay()
 
 	UZombieGameInstance* GameInstance = Cast<UZombieGameInstance>(GetWorld()->GetGameInstance());
 	if (GameInstance != nullptr) GameInstance->PlayerCharacterStart(this);
+
+	CameraTransitionCurrent = CameraTransitionTime;
+	SpringArm->SetRelativeLocation(NormalArmOffset);
+	SpringArm->TargetArmLength = NormalArmLength;
 }
 
 // Called every frame
@@ -77,6 +81,13 @@ void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (CameraTransitionCurrent < CameraTransitionTime)
+	{
+		CameraTransitionCurrent += DeltaTime;
+		if (CameraTransitionCurrent >= CameraTransitionTime) CameraTransitionCurrent = CameraTransitionTime;
+		SpringArm->SetRelativeLocation(FMath::Lerp(LastCameraOffset, TargetCameraOffset, (CameraTransitionCurrent / CameraTransitionTime)));
+		SpringArm->TargetArmLength = FMath::Lerp(LastArmOffset, TargetArmOffset, (CameraTransitionCurrent / CameraTransitionTime));
+	}
 }
 
 // Called to bind functionality to input
@@ -89,10 +100,14 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 void APlayerCharacter::StartAiming()
 {
 	if (WeaponManagerComponent->CurrentWeapon == nullptr) return;
-
+	CameraTransitionCurrent = 0;
 	bIsAiming = true;
-	SpringArm->SetRelativeLocation(FVector(0, 30, 70));
-	SpringArm->TargetArmLength = 75.0f;
+	LastCameraOffset = SpringArm->GetRelativeLocation();
+	LastArmOffset = SpringArm->TargetArmLength;
+	TargetCameraOffset = AimingArmOffset;
+	TargetArmOffset = AimingArmLength;
+	//SpringArm->SetRelativeLocation(AimingArmOffset);
+	//SpringArm->TargetArmLength = AimingArmLength;
 	bUseControllerRotationYaw = true;
 	GetCharacterMovement()->bOrientRotationToMovement = false;
 	SetMovementSpeed();
@@ -101,8 +116,13 @@ void APlayerCharacter::StartAiming()
 
 void APlayerCharacter::StopAiming()
 {
-	SpringArm->SetRelativeLocation(FVector(0, 0, 80));
-	SpringArm->TargetArmLength = 250.0f;
+	CameraTransitionCurrent = 0;
+	LastCameraOffset = SpringArm->GetRelativeLocation();
+	LastArmOffset = SpringArm->TargetArmLength;
+	TargetCameraOffset = NormalArmOffset;
+	TargetArmOffset = NormalArmLength;
+	//SpringArm->SetRelativeLocation(NormalArmOffset);
+	//SpringArm->TargetArmLength = NormalArmLength;
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	bIsAiming = false;
@@ -222,14 +242,11 @@ FVector2D APlayerCharacter::AimOffset()
 		TraceParams
 	))
 	{
-		FVector CharacterPoint = GetActorLocation() + FVector{0,0,65};
+		FVector CharacterPoint = GetActorLocation() + FVector{0,0,CharacterPointHeightOffset };
 		FRotator ImpactRotation = UKismetMathLibrary::FindLookAtRotation(CharacterPoint, HitResult.ImpactPoint);
-
 		FRotator Difference = ImpactRotation - GetActorRotation();
-
-		UE_LOG(LogTemp, Warning, TEXT("ImpactRotation: %s"), *ImpactRotation.ToString());
-		FVector2D ReturnValue = FVector2D{ Difference.Yaw, Difference.Pitch };
-
+		//UE_LOG(LogTemp, Warning, TEXT("ImpactRotation: %s"), *ImpactRotation.ToString());
+		FVector2D ReturnValue = FVector2D{ FMath::Clamp(Difference.Yaw * AimingOffsetMultiplier, -90.0f, 90.0f) , FMath::Clamp(Difference.Pitch * AimingOffsetMultiplier, -90.0f, 90.0f)  };
 
 		//UE_LOG(LogTemp, Warning, TEXT("Return: %s"), *ReturnValue.ToString());
 
@@ -256,6 +273,12 @@ void APlayerCharacter::ZombieCQCStart(FVector ZombiePosition)
 	{
 		PlayerController->TutorialZombieFight(true);
 	}
+
+	CameraTransitionCurrent = 0;
+	LastCameraOffset = SpringArm->GetRelativeLocation();
+	LastArmOffset = SpringArm->TargetArmLength;
+	TargetCameraOffset = ZombieStrugleOffset;
+	TargetArmOffset = ZombieStrugleArmLength;
 }
 
 void APlayerCharacter::ZombieTakedown()
@@ -276,6 +299,12 @@ void APlayerCharacter::ZombieCQCEnd()
 	{
 		PlayerController->TutorialZombieFight(false);
 	}
+
+	CameraTransitionCurrent = 0;
+	LastCameraOffset = SpringArm->GetRelativeLocation();
+	LastArmOffset = SpringArm->TargetArmLength;
+	TargetCameraOffset = NormalArmOffset;
+	TargetArmOffset = NormalArmLength;
 }
 
 void APlayerCharacter::Clothed(bool bIsClothed)

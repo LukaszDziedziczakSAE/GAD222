@@ -106,6 +106,48 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	class UNiagaraComponent* NeckBleed;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float NormalArmLength{ 150.0f };
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float AimingArmLength{ 70.0f };
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float ZombieStrugleArmLength{ 250.0f };
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FVector AimingArmOffset{ 0, 30, 70 };
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FVector NormalArmOffset{ 0, 0, 55 };
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FVector ZombieStrugleOffset{ 0, 0, 100 };
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float CameraTransitionTime{ 0.4 };
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	float CameraTransitionCurrent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	FVector TargetCameraOffset;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	float TargetArmOffset;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	FVector LastCameraOffset;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	float LastArmOffset;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float AimingOffsetMultiplier{ 1.25f };
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float CharacterPointHeightOffset{ 70 };
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
