@@ -66,6 +66,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float AttackRate{ 1.0f };
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float ChanceToBite{ 0.7f };
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	class UZombieHealth* ZombieHealth;
 
@@ -131,6 +134,21 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float CQCDistance{ 72.0f };
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	class UNiagaraComponent* LeftShoulderBleed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UNiagaraComponent* RightShoulderBleed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UNiagaraComponent* LeftHipBleed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UNiagaraComponent* RightHipBleed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UNiagaraComponent* NeckBleed;
 
 public:	
 	// Called every frame

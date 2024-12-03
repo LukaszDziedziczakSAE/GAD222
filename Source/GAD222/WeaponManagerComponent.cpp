@@ -5,6 +5,8 @@
 #include "Weapon.h"
 #include "PlayerCharacter.h"
 #include "ZombieGameInstance.h"
+#include "ZombieGame_PlayerController.h"
+#include "TutorialComponent.h"
 
 // Sets default values for this component's properties
 UWeaponManagerComponent::UWeaponManagerComponent()
@@ -23,7 +25,7 @@ void UWeaponManagerComponent::BeginPlay()
 	Super::BeginPlay();
 
 	PlayerCharacter = Cast<APlayerCharacter>(GetOwner());
-	
+	PlayerController = Cast<AZombieGame_PlayerController>(PlayerCharacter->GetController());
 }
 
 
@@ -71,12 +73,16 @@ void UWeaponManagerComponent::SpawnWeapon()
 	CurrentWeapon->SetActorRelativeRotation(Weapons[0].RelativeRotation);
 	CurrentWeapon->SetWeaponManagerComponent(this);
 	CurrentWeapon->SetOwner(GetOwner());
+
+	WeaponEquipedTutorial(PistolAmmoStorage > 0);
 }
 
 void UWeaponManagerComponent::DespawnWeapon()
 {
 	CurrentWeapon->Destroy();
 	CurrentWeapon = nullptr;
+
+	WeaponUnequipedTutorial();
 }
 
 void UWeaponManagerComponent::PullTrigger()
@@ -110,6 +116,8 @@ void UWeaponManagerComponent::ReloadCurrentWeapon()
 	bIsReloading = true;
 	FTimerHandle AttackTimerHandle;
 	GetWorld()->GetTimerManager().SetTimer(AttackTimerHandle, this, &UWeaponManagerComponent::ReloadAnimationComplete, t, false);
+
+	WeaponReloadedTutorial();
 }
 
 void UWeaponManagerComponent::Save()
@@ -120,5 +128,25 @@ void UWeaponManagerComponent::Save()
 		GameInstance->PistolAmmo = PistolAmmo;
 		GameInstance->PistolAmmoStorage = PistolAmmoStorage;
 	}
+}
+
+void UWeaponManagerComponent::WeaponPickedUpTutorial()
+{
+	if (PlayerController != nullptr) PlayerController->TutorialWeaponPickedUp();
+}
+
+void UWeaponManagerComponent::WeaponEquipedTutorial(bool bHasAmmo)
+{
+	if (PlayerController != nullptr) PlayerController->TutorialWeaponEquiped(bHasAmmo);
+}
+
+void UWeaponManagerComponent::WeaponUnequipedTutorial()
+{
+	if (PlayerController != nullptr) PlayerController->TutorialWeaponUnequiped();
+}
+
+void UWeaponManagerComponent::WeaponReloadedTutorial()
+{
+	if (PlayerController != nullptr) PlayerController->TutorialWeaponReloaded();
 }
 

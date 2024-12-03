@@ -13,6 +13,9 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "ZombieGameInstance.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
+#include "ZombieGame_PlayerController.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -30,25 +33,29 @@ APlayerCharacter::APlayerCharacter()
 	PlayerInteraction = CreateDefaultSubobject<UPlayerInteraction>(TEXT("Player Interaction"));
 	PlayerHealth = CreateDefaultSubobject<UPlayerHealth>(TEXT("Player Health"));
 
-	Top = CreateDefaultSubobject<USkeletalMeshComponent>("Top");
+	Top = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Top"));
 	Top->SetupAttachment(GetMesh());
 	Top->SetLeaderPoseComponent(GetMesh());
 
-	Bottom = CreateDefaultSubobject<USkeletalMeshComponent>("Bottom");
+	Bottom = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Bottom"));
 	Bottom->SetupAttachment(GetMesh());
 	Bottom->SetLeaderPoseComponent(GetMesh());
 
-	Shoes = CreateDefaultSubobject<USkeletalMeshComponent>("Shoes");
+	Shoes = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Shoes"));
 	Shoes->SetupAttachment(GetMesh());
 	Shoes->SetLeaderPoseComponent(GetMesh());
 
-	Hair = CreateDefaultSubobject<USkeletalMeshComponent>("Hair");
+	Hair = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Hair"));
 	Hair->SetupAttachment(GetMesh());
 	Hair->SetLeaderPoseComponent(GetMesh());
 
-	Arms = CreateDefaultSubobject<USkeletalMeshComponent>("Arms");
+	Arms = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Arms"));
 	Arms->SetupAttachment(GetMesh());
 	Arms->SetLeaderPoseComponent(GetMesh());
+
+	NeckBleed = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Neck Bleed"));
+	NeckBleed->SetupAttachment(GetMesh(), TEXT("clavicle_r"));
+	NeckBleed->bAutoActivate = false;
 }
 
 // Called when the game starts or when spawned
@@ -154,8 +161,6 @@ void APlayerCharacter::Death()
 	GetMesh()->WakeAllRigidBodies();
 	GetMesh()->SetCollisionProfileName(TEXT("Pawn"));
 
-	WeaponManagerComponent->Save();
-
 	PlayerDeathEvent.Broadcast();
 }
 
@@ -217,12 +222,20 @@ FVector2D APlayerCharacter::AimOffset()
 		TraceParams
 	))
 	{
-		FVector CharacterPoint = GetActorLocation() + FVector{0,0,150};
-		FRotator ImapctRotation = UKismetMathLibrary::FindLookAtRotation(CharacterPoint, HitResult.ImpactPoint);
+		FVector CharacterPoint = GetActorLocation() + FVector{0,0,65};
+		FRotator ImpactRotation = UKismetMathLibrary::FindLookAtRotation(CharacterPoint, HitResult.ImpactPoint);
 
-		return FVector2D{ ImapctRotation.Pitch, ImapctRotation.Yaw };
+		FRotator Difference = ImpactRotation - GetActorRotation();
+
+		UE_LOG(LogTemp, Warning, TEXT("ImpactRotation: %s"), *ImpactRotation.ToString());
+		FVector2D ReturnValue = FVector2D{ Difference.Yaw, Difference.Pitch };
+
+
+		//UE_LOG(LogTemp, Warning, TEXT("Return: %s"), *ReturnValue.ToString());
+
+		return ReturnValue;
 	}
-	return FVector2D();
+	return FVector2D{0.0f, 0.0f};
 }
 
 UZombieGameInstance* APlayerCharacter::GetGameInstance()
@@ -237,6 +250,12 @@ void APlayerCharacter::ZombieCQCStart(FVector ZombiePosition)
 	FVector Direction = (ZombiePosition - GetActorLocation());
 	SetActorRotation((FRotationMatrix::MakeFromX(Direction).ToQuat()), ETeleportType::None);
 	CQCDefence = 0;
+
+	AZombieGame_PlayerController* PlayerController = Cast<AZombieGame_PlayerController>(GetController());
+	if (PlayerController != nullptr)
+	{
+		PlayerController->TutorialZombieFight(true);
+	}
 }
 
 void APlayerCharacter::ZombieTakedown()
@@ -250,6 +269,13 @@ void APlayerCharacter::ZombieCQCEnd()
 {
 	bZombieCQC = false;
 	bCanMove = true;
+	NeckBleed->Deactivate();
+
+	AZombieGame_PlayerController* PlayerController = Cast<AZombieGame_PlayerController>(GetController());
+	if (PlayerController != nullptr)
+	{
+		PlayerController->TutorialZombieFight(false);
+	}
 }
 
 void APlayerCharacter::Clothed(bool bIsClothed)
@@ -288,4 +314,20 @@ void APlayerCharacter::Clothed(bool bIsClothed)
 void APlayerCharacter::PickedUpItemBroadcast(FString MessageText)
 {
 	PlayerPickupEvent.Broadcast(MessageText);
+}
+
+void APlayerCharacter::StartNeckBleed()
+{
+	if (NeckBleed != nullptr && !NeckBleed->IsActive())
+	{
+		NeckBleed->Activate(true);
+	}
+}
+
+void APlayerCharacter::SaveToGameInstance()
+{
+	WeaponManagerComponent->Save();
+
+	AZombieGame_PlayerController* PlayerController = Cast<AZombieGame_PlayerController>(GetController());
+	if (PlayerController != nullptr) PlayerController->TutorialSave();
 }

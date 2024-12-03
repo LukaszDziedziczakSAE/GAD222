@@ -77,6 +77,7 @@ void APickUp::PickupPistol(APlayerCharacter* PlayerCharacter, bool bSkipBroadcas
 	if (PlayerCharacter->WeaponManagerComponent->HasPistol) return;
 
 	PlayerCharacter->WeaponManagerComponent->HasPistol = true;
+	PlayerCharacter->WeaponManagerComponent->WeaponPickedUpTutorial(); 
 
 	if (!bSkipBroadcast) PlayerCharacter->PickedUpItemBroadcast("Pistol");
 }

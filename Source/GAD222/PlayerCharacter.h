@@ -103,6 +103,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	bool bShowClothesOverride;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	class UNiagaraComponent* NeckBleed;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -199,4 +202,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void PickedUpItemBroadcast(FString MessageText);
+
+	UFUNCTION(BlueprintCallable)
+	void StartNeckBleed();
+
+	UFUNCTION(BlueprintCallable)
+	void SaveToGameInstance();
 };

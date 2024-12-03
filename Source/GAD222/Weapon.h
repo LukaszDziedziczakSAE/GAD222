@@ -66,7 +66,16 @@ protected:
 	class USoundBase* ImpactAudio;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	class USoundBase* ImpactFleshAudio;
+	 USoundBase* ImpactFleshAudio;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<class AProjectile> ProjectilePrefab;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float ProjectileSpeed{ 800.0f };
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float Variation{ 20.0f };
 
 public:	
 	// Called every frame

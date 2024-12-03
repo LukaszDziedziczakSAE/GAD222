@@ -14,6 +14,9 @@ class GAD222_API AZombieGame_PlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
+public:
+	AZombieGame_PlayerController();
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -29,31 +32,34 @@ protected:
 	class UInputAction* IA_Move;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	class UInputAction* IA_Look;
+	UInputAction* IA_Look;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	class UInputAction* IA_Aim;
+	UInputAction* IA_Aim;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	class UInputAction* IA_Fire;
+	UInputAction* IA_Fire;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	class UInputAction* IA_Interact;
+	UInputAction* IA_Interact;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	class UInputAction* IA_WeaponSelect;
+	UInputAction* IA_WeaponSelect;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	class UInputAction* IA_Pause;
+	UInputAction* IA_Pause;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	class UInputAction* IA_Reload;
+	UInputAction* IA_Reload;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	class UInputAction* IA_Run;
+	UInputAction* IA_Run;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool bGamePaused;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	class UTutorialComponent* TutorialComponent;
 
 	UFUNCTION()
 	virtual void SetupInputComponent() override;
@@ -95,4 +101,25 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void PauseGame(const FInputActionValue& Value);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bDisableControl;
+
+	UFUNCTION(BlueprintCallable)
+	void TutorialSave();
+
+	UFUNCTION(BlueprintCallable)
+	void TutorialWeaponPickedUp();
+
+	UFUNCTION(BlueprintCallable)
+	void TutorialWeaponEquiped(bool bHasAmmo);
+
+	UFUNCTION(BlueprintCallable)
+	void TutorialWeaponUnequiped();
+
+	UFUNCTION(BlueprintCallable)
+	void TutorialWeaponReloaded();
+
+	UFUNCTION(BlueprintCallable)
+	void TutorialZombieFight(bool bStarted);
 };

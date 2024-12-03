@@ -31,22 +31,46 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void Reset();
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	int PistolAmmo;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	int PistolAmmoStorage;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	bool bMaleCharacter;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	bool bHasClothesOn;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	TEnumAsByte<EDoorState> DoorState{ DoorClosed };
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool bHasLookedAround;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool bHasMoved;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool bHasSprinted;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool bHasEquipedWeapon;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool bHasReloaded;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool bHasAimed;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool bHasFiredWeapon;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool bHasFoughtZombie;
 	
 protected:
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TArray<FString> Pickups;
 };

@@ -11,6 +11,8 @@
 #include "Components/CapsuleComponent.h"
 #include "NiagaraComponent.h"
 #include "Components/AudioComponent.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
 
 // Sets default values
 AZombieCharacter::AZombieCharacter()
@@ -64,6 +66,26 @@ AZombieCharacter::AZombieCharacter()
 	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio Component"));
 	AudioComponent->SetupAttachment(GetRootComponent());
 	AudioComponent->SetRelativeLocation(FVector{0,0,60});
+
+	LeftShoulderBleed = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Left Shoulder Bleed"));
+	LeftShoulderBleed->SetupAttachment(GetMesh(), TEXT("clavicle_l"));
+	LeftShoulderBleed->bAutoActivate = false;
+
+	RightShoulderBleed = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Right Shoulder Bleed"));
+	RightShoulderBleed->SetupAttachment(GetMesh(), TEXT("clavicle_r"));
+	RightShoulderBleed->bAutoActivate = false;
+
+	LeftHipBleed = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Left Hip Bleed"));
+	LeftHipBleed->SetupAttachment(GetMesh(), TEXT("thigh_l"));
+	LeftHipBleed->bAutoActivate = false;
+
+	RightHipBleed = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Right Hip Bleed"));
+	RightHipBleed->SetupAttachment(GetMesh(), TEXT("thigh_r"));
+	RightHipBleed->bAutoActivate = false;
+
+	NeckBleed = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Neck Bleed"));
+	NeckBleed->SetupAttachment(GetMesh(), TEXT("neck_01"));
+	NeckBleed->bAutoActivate = false;
 }
 
 // Called when the game starts or when spawned
@@ -195,7 +217,6 @@ void AZombieCharacter::Tick(float DeltaTime)
 			}
 		}
 	}
-
 }
 
 // Called to bind functionality to input
@@ -226,26 +247,31 @@ void AZombieCharacter::DetachBodyPart(TEnumAsByte<EBodyPart> BodyPart)
 	case EBodyPart::Head:
 		DetachMesh(Head);
 		bHasHead = false;
+		if (NeckBleed != nullptr) NeckBleed->Activate();
 		break;
 
 	case EBodyPart::LeftArm:
 		DetachMesh(LeftArm);
 		bHasLeftArm = false;
+		if (LeftShoulderBleed != nullptr) LeftShoulderBleed->Activate();
 		break;
 
 	case EBodyPart::RightArm:
 		DetachMesh(RightArm);
 		bHasRightArm = false;
+		if (RightShoulderBleed != nullptr) RightShoulderBleed->Activate();
 		break;
 
 	case EBodyPart::Leftleg:
 		DetachMesh(LeftLeg);
 		bHasLeftLeg = false;
+		if (LeftHipBleed != nullptr) LeftHipBleed->Activate();
 		break;
 
 	case EBodyPart::RightLeg:
 		DetachMesh(RightLeg);
 		bHasRightLeg = false;
+		if (RightHipBleed != nullptr) RightHipBleed->Activate();
 		break;
 	}
 	SetMovementSpeed();
@@ -280,8 +306,22 @@ void AZombieCharacter::Attack(APlayerCharacter* PlayerCharacter)
 	UE_LOG(LogTemp, Warning, TEXT("%s attacking"), *GetName());
 	bIsAttacking = true;
 
-	
-	EatingAttack(PlayerCharacter);
+	if (bHasLeftArm && bHasRightArm && bHasHead && bHasLeftLeg && bHasRightLeg)
+	{
+		float RandomFloat = UKismetMathLibrary::RandomFloatInRange(0.0f, 1.0f);
+		if (RandomFloat <= ChanceToBite)
+		{
+			EatingAttack(PlayerCharacter);
+		}
+		else
+		{
+			HandAttack();
+		}
+	}
+	else
+	{
+		HandAttack();
+	}
 	
 }
 

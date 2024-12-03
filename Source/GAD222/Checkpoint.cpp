@@ -36,6 +36,7 @@ void ACheckpoint::OnOverlapBegin(UPrimitiveComponent* newComp, AActor* OtherActo
 		{
 			GameInstance->Checkpoint = CheckpointIndex;
 			UE_LOG(LogTemp, Display, TEXT("Checkpoint %d"), CheckpointIndex);
+			PlayerCharacter->SaveToGameInstance();
 		}
 		else
 		{

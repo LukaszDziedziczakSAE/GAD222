@@ -53,7 +53,7 @@ void AHazzard::OnOverlapBegin(UPrimitiveComponent* newComp, AActor* OtherActor, 
 
 	if (Character != nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s entered hazzard"), *Character->GetName());
+		//UE_LOG(LogTemp, Warning, TEXT("%s entered hazzard"), *Character->GetName());
 		CharactersInHazzard.Add(Character);
 	}
 }
@@ -64,7 +64,7 @@ void AHazzard::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherAc
 
 	if (Character != nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s exited hazzard"), *Character->GetName());
+		//UE_LOG(LogTemp, Warning, TEXT("%s exited hazzard"), *Character->GetName());
 		CharactersInHazzard.Remove(Character);
 	}
 }
@@ -81,7 +81,7 @@ void AHazzard::Tick(float DeltaTime)
 		APlayerCharacter* Player = Cast<APlayerCharacter>(Character);
 		if (Player != nullptr)
 		{
-			Player->InflictDamage(DamageRate * DeltaTime);
+			Player->InflictDamage(DamageRate * DeltaTime * 2);
 		}
 		else
 		{

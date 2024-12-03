@@ -30,6 +30,9 @@ protected:
 	UFUNCTION()
 	void ReloadAnimationComplete();
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class AZombieGame_PlayerController* PlayerController;
+
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
@@ -72,4 +75,16 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void Save();
+
+	UFUNCTION(BlueprintCallable)
+	void WeaponPickedUpTutorial();
+
+	UFUNCTION(BlueprintCallable)
+	void WeaponEquipedTutorial(bool bHasAmmo);
+
+	UFUNCTION(BlueprintCallable)
+	void WeaponUnequipedTutorial();
+
+	UFUNCTION(BlueprintCallable)
+	void WeaponReloadedTutorial();
 };

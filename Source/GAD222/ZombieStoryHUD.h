@@ -15,6 +15,10 @@ class GAD222_API AZombieStoryHUD : public AHUD
 	GENERATED_BODY()
 
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UUserWidget_Tutorial* TutorialWidget;
+
+
 	UFUNCTION(BlueprintNativeEvent)
 	void RemoveAllFromViewport();
 

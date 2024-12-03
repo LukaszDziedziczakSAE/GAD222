@@ -9,9 +9,8 @@
 #include "ZombieCharacter.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "WeaponManagerComponent.h"
-#include "NiagaraComponent.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "Kismet/GameplayStatics.h"
+#include "Projectile.h"
 
 // Sets default values
 AWeapon::AWeapon()
@@ -59,8 +58,6 @@ void AWeapon::Fire()
 
 	UNiagaraFunctionLibrary::SpawnSystemAttached(FireEffectMuzzle, Muzzle, NAME_None, FVector(0.f), FRotator(0.f), EAttachLocation::Type::KeepRelativeOffset, true);
 
-	
-
 	FCollisionQueryParams TraceParams = FCollisionQueryParams(FName(TEXT("RV_Trace")), true, this);
 	TraceParams.bTraceComplex = true;
 	TraceParams.bReturnPhysicalMaterial = true;
@@ -71,7 +68,12 @@ void AWeapon::Fire()
 
 	APlayerCameraManager* PlayerCameraManager = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
 	FVector Start = PlayerCameraManager->GetCameraLocation();
-	FVector End = Start + (PlayerCameraManager->GetActorForwardVector() * TraceLength);
+	FVector StartVariated = FVector{
+		UKismetMathLibrary::RandomFloatInRange(Start.X - Variation, Start.X + Variation),
+		UKismetMathLibrary::RandomFloatInRange(Start.Y - Variation, Start.Y + Variation),
+		UKismetMathLibrary::RandomFloatInRange(Start.Z - Variation, Start.Z + Variation)
+	};
+	FVector End = StartVariated + (PlayerCameraManager->GetActorForwardVector() * TraceLength);
 
 	//call GetWorld() from within an actor extending class
 	if (GetWorld()->LineTraceSingleByChannel(
@@ -85,18 +87,27 @@ void AWeapon::Fire()
 		USkeletalMeshComponent* HitSkeletalMeshComponent = Cast<USkeletalMeshComponent>(HitResult.GetComponent());
 		AZombieCharacter* Zombie = Cast<AZombieCharacter>(HitResult.GetActor());
 
-		FRotator ImapctRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), HitResult.ImpactPoint);
+		FRotator ImpactRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), HitResult.ImpactPoint);
+
+		FActorSpawnParameters SpawnParameters;
+		AProjectile* Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectilePrefab, Muzzle->GetComponentLocation(), Muzzle->GetComponentRotation(), SpawnParameters);
+
+		
 
 		if (Zombie != nullptr && HitSkeletalMeshComponent != nullptr)
 		{
 			Zombie->InflictDamage(Damage, HitSkeletalMeshComponent);
-			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), ImpactFlesh, HitResult.Location, ImapctRotation);
-			UGameplayStatics::PlaySoundAtLocation(GetWorld(), ImpactFleshAudio, HitResult.Location);
+			/*UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), ImpactFlesh, HitResult.Location, ImapctRotation);
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), ImpactFleshAudio, HitResult.Location);*/
+
+			Projectile->Initilize(ProjectileSpeed, HitResult.Location, ImpactRotation, ImpactFlesh, ImpactFleshAudio);
 		}
 		else
 		{
-			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), Impact, HitResult.Location, ImapctRotation);
-			UGameplayStatics::PlaySoundAtLocation(GetWorld(), ImpactAudio, HitResult.Location);
+			/*UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), Impact, HitResult.Location, ImapctRotation);
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), ImpactAudio, HitResult.Location);*/
+
+			Projectile->Initilize(ProjectileSpeed, HitResult.Location, ImpactRotation, Impact, ImpactAudio);
 		}
 		
 		//UE_LOG(LogTemp, Warning, TEXT("Hit %s"), *HitResult.GetComponent()->GetName());

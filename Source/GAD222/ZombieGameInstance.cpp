@@ -62,4 +62,12 @@ void UZombieGameInstance::Reset()
 	Pickups.Empty();
 	bHasClothesOn = false;
 	DoorState = DoorClosed;
+
+	bHasLookedAround = false;
+	bHasMoved = false;
+	bHasSprinted = false;
+	bHasEquipedWeapon = false;
+	bHasReloaded = false;
+	bHasAimed = false;
+	bHasFiredWeapon = false;
 }
