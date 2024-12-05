@@ -100,6 +100,9 @@ protected:
 	class UAudioComponent* AudioComponent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	class UAudioComponent* FootstepAudioComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	class USoundBase* ZombieIdleAudio;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
@@ -240,4 +243,7 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FZombieDeathDelegate ZombieDeathEvent;
+
+	UFUNCTION(BlueprintCallable)
+	void PlayFootstepSound();
 };

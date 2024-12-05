@@ -148,6 +148,15 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float CharacterPointHeightOffset{ 70 };
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	class UAudioComponent* FootstepAudioComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	USoundBase* ShoeFootstepSound;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	USoundBase* NoShoeFootstepSound;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -250,4 +259,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SaveToGameInstance();
+
+	UFUNCTION(BlueprintCallable)
+	void PlayFootstepSound();
 };

@@ -12,7 +12,6 @@
 #include "NiagaraComponent.h"
 #include "Components/AudioComponent.h"
 #include "NiagaraFunctionLibrary.h"
-#include "NiagaraComponent.h"
 
 // Sets default values
 AZombieCharacter::AZombieCharacter()
@@ -86,6 +85,10 @@ AZombieCharacter::AZombieCharacter()
 	NeckBleed = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Neck Bleed"));
 	NeckBleed->SetupAttachment(GetMesh(), TEXT("neck_01"));
 	NeckBleed->bAutoActivate = false;
+
+	FootstepAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Footstep Audio Component"));
+	FootstepAudioComponent->SetupAttachment(GetRootComponent());
+	FootstepAudioComponent->SetRelativeLocation(FVector{ 0,0,-85 });
 }
 
 // Called when the game starts or when spawned
@@ -389,5 +392,11 @@ void AZombieCharacter::StartRunning()
 {
 	bRunning = true;
 	SetMovementSpeed();
+}
+
+void AZombieCharacter::PlayFootstepSound()
+{
+	if (FootstepAudioComponent->IsPlaying()) FootstepAudioComponent->Stop();
+	FootstepAudioComponent->Play();
 }
 

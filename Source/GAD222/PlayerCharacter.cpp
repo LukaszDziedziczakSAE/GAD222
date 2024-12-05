@@ -16,6 +16,7 @@
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
 #include "ZombieGame_PlayerController.h"
+#include "Components/AudioComponent.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -56,6 +57,10 @@ APlayerCharacter::APlayerCharacter()
 	NeckBleed = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Neck Bleed"));
 	NeckBleed->SetupAttachment(GetMesh(), TEXT("clavicle_r"));
 	NeckBleed->bAutoActivate = false;
+
+	FootstepAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Footstep Audio Component"));
+	FootstepAudioComponent->SetupAttachment(GetRootComponent());
+	FootstepAudioComponent->SetRelativeLocation(FVector{ 0,0,-85 });
 }
 
 // Called when the game starts or when spawned
@@ -359,4 +364,22 @@ void APlayerCharacter::SaveToGameInstance()
 
 	AZombieGame_PlayerController* PlayerController = Cast<AZombieGame_PlayerController>(GetController());
 	if (PlayerController != nullptr) PlayerController->TutorialSave();
+}
+
+void APlayerCharacter::PlayFootstepSound()
+{
+	if (FootstepAudioComponent->IsPlaying()) FootstepAudioComponent->Stop();
+
+	if (Shoes->IsVisible())
+	{
+		if (FootstepAudioComponent->Sound != ShoeFootstepSound) 
+			FootstepAudioComponent->SetSound(ShoeFootstepSound);
+	}
+	else
+	{
+		if (FootstepAudioComponent->Sound != NoShoeFootstepSound)
+			FootstepAudioComponent->SetSound(NoShoeFootstepSound);
+	}
+
+	FootstepAudioComponent->Play();
 }
